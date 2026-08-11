@@ -1,14 +1,13 @@
-x<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grande Festa Scout 2026</title>
   
-  <!-- Firebase SDKs (Compatibility Version) -->
+  <!-- Firebase SDKs (Librerie Google per il Database Live) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
 
   <style>
     :root {
@@ -134,57 +133,60 @@ x<!DOCTYPE html>
       color: #94a3b8;
     }
 
-    /* SEZIONE COSA PORTARE (CHECKLIST) */
-    .checklist-section {
+    /* SEZIONE COSA PORTARE */
+    .bring-section {
       max-width: 800px;
-      margin: 40px auto;
-      padding: 30px;
+      margin: 30px auto;
+      padding: 25px;
       background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
 
-    .checklist-section h2 {
+    .bring-section h2 {
       color: #38bdf8;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+    }
+
+    .bring-category-title {
+      color: var(--accent);
+      font-size: 1.1rem;
+      margin: 15px 0 10px;
+      font-weight: bold;
     }
 
     .checklist-grid {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .checklist-item {
+    .check-item {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
       background: rgba(15, 23, 42, 0.6);
-      padding: 12px 20px;
+      padding: 12px 15px;
       border-radius: 10px;
       cursor: pointer;
       user-select: none;
       transition: background 0.2s;
     }
 
-    .checklist-item:hover {
+    .check-item:hover {
       background: rgba(15, 23, 42, 0.9);
     }
 
-    .checklist-item input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
+    .check-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
       accent-color: var(--primary);
       cursor: pointer;
     }
 
-    .checklist-item span {
-      font-size: 1.05rem;
-    }
-
-    .checklist-item.checked span {
+    .check-item.checked span {
       text-decoration: line-through;
       color: #64748b;
     }
@@ -228,9 +230,9 @@ x<!DOCTYPE html>
       font-weight: bold;
     }
 
-    /* VOTAZIONI CON CATEGORIE MULTIPLE */
+    /* VOTAZIONE ONLINE LIVE */
     .voting-section {
-      max-width: 850px;
+      max-width: 800px;
       margin: 40px auto;
       padding: 30px;
       background: rgba(15, 23, 42, 0.95);
@@ -245,26 +247,18 @@ x<!DOCTYPE html>
       margin-bottom: 10px;
     }
 
-    .category-title {
-      color: #38bdf8;
-      font-size: 1.2rem;
-      margin-top: 25px;
-      margin-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 5px;
-    }
-
     .vote-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
+      margin-top: 20px;
     }
 
     .vote-card-item {
       background: rgba(30, 41, 59, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 12px;
-      padding: 12px;
+      padding: 15px;
       text-align: center;
     }
 
@@ -275,8 +269,8 @@ x<!DOCTYPE html>
       border: 1px solid #38bdf8;
       padding: 8px;
       border-radius: 8px;
-      margin-top: 8px;
-      font-size: 0.9rem;
+      margin: 10px 0;
+      font-size: 0.95rem;
     }
 
     .send-vote-btn {
@@ -284,12 +278,11 @@ x<!DOCTYPE html>
       background: var(--primary);
       color: white;
       border: none;
-      padding: 14px;
-      border-radius: 10px;
+      padding: 12px;
+      border-radius: 8px;
       font-weight: bold;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
-      margin-top: 30px;
       transition: background 0.3s;
     }
 
@@ -297,9 +290,9 @@ x<!DOCTYPE html>
       background: #4caf50;
     }
 
-    /* CLASSIFICA LIVE */
+    /* CLASSIFICA TEMPO REALE */
     .live-leaderboard {
-      margin-top: 40px;
+      margin-top: 35px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       padding-top: 25px;
     }
@@ -327,72 +320,6 @@ x<!DOCTYPE html>
       height: 100%;
       width: 0%;
       transition: width 0.5s ease;
-    }
-
-    /* GALLERIA FOTOGRAFICA LIVE */
-    .gallery-section {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 30px;
-      background: rgba(30, 41, 59, 0.8);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      text-align: center;
-    }
-
-    .gallery-section h2 {
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-
-    .upload-box {
-      margin: 20px 0 30px;
-      padding: 20px;
-      background: rgba(15, 23, 42, 0.6);
-      border: 2px dashed #38bdf8;
-      border-radius: 15px;
-    }
-
-    .upload-btn-label {
-      display: inline-block;
-      background: #38bdf8;
-      color: #0f172a;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .upload-btn-label:hover {
-      background: #7dd3fc;
-    }
-
-    .file-input {
-      display: none;
-    }
-
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .photo-item {
-      width: 100%;
-      height: 180px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: #0f172a;
-    }
-
-    .photo-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     /* BANNER AGENZIA */
@@ -428,7 +355,7 @@ x<!DOCTYPE html>
 
   <header>
     <h1 class="hero-title">🔥 FESTA SCOUT 2026 🔥</h1>
-    <p class="hero-subtitle">Serata di Bivacco, Giochi e SFIDE di Squadriglia!</p>
+    <p class="hero-subtitle">Votazione live costumi di squadriglia</p>
     <div class="location-info">📍 Casa di Clara — Ore 18:00</div>
   </header>
 
@@ -441,20 +368,35 @@ x<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- CHECKLIST COSA PORTARE -->
-  <div class="checklist-section">
-    <h2>📋 Checklist: Cosa Portare</h2>
-    <div class="checklist-grid" id="checklistContainer">
-      <label class="checklist-item"><input type="checkbox" onchange="toggleCheck(this)"> <span>Uniforme Scout Impeccabile</span></label>
-      <label class="checklist-item"><input type="checkbox" onchange="toggleCheck(this)"> <span>Borraccia d'acqua</span></label>
-      <label class="checklist-item"><input type="checkbox" onchange="toggleCheck(this)"> <span>Torcia o Lampada Frontale</span></label>
-      <label class="checklist-item"><input type="checkbox" onchange="toggleCheck(this)"> <span>Ricambio completo per i giochi</span></label>
-      <label class="checklist-item"><input type="checkbox" onchange="toggleCheck(this)"> <span>Costume / Travestimento di Squadriglia</span></label>
-      <label class="checklist-item"><input type="checkbox" onchange="toggleCheck(this)"> <span>Quaderno dei Canti & Spirito di Avventura!</span></label>
+  <!-- SEZIONE COSA PORTARE -->
+  <div class="bring-section">
+    <h2>📋 Cosa Portare alla Festa</h2>
+    <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">
+      Spunta le voci man mano che prepari lo zaino per non dimenticare nulla!
+    </p>
+
+    <div class="bring-category-title">🎒 Equipaggiamento Personale</div>
+    <div class="checklist-grid">
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Uniforme Scout completa</span></label>
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Borraccia / Gavetta</span></label>
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Torcia elettrica o Lampada frontale</span></label>
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Costume / Travestimento della tua squadriglia</span></label>
+    </div>
+
+    <div class="bring-category-title">🍕 Cibo, Rustici e Snacks</div>
+    <div class="checklist-grid">
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Pizzette, Focacce o Tramezzini</span></label>
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Rustici, Torte salate o Patatine</span></label>
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Dolci fatti in casa o Biscotti</span></label>
+    </div>
+
+    <div class="bring-category-title">🥤 Bibite e Bevande</div>
+    <div class="checklist-grid">
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Succhi di Frutta / Tè freddo</span></label>
+      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Bottiglie d'Acqua o Bibite gassate</span></label>
     </div>
   </div>
 
-  <!-- SQUADRIGLIE -->
   <div class="squad-container">
     <div class="squad-card"><span class="squad-icon">🦅</span><h3 class="squad-name">Aquile</h3><span class="theme-tag">Supereroi</span></div>
     <div class="squad-card"><span class="squad-icon">🦇</span><h3 class="squad-name">Pipistrelli</h3><span class="theme-tag">Vampiri</span></div>
@@ -463,56 +405,25 @@ x<!DOCTYPE html>
     <div class="squad-card"><span class="squad-icon">🦉</span><h3 class="squad-name">Gufi</h3><span class="theme-tag">Magia</span></div>
   </div>
 
-  <!-- VOTAZIONE ONLINE CON CATEGORIE MULTIPLE -->
+  <!-- PANNELLO VOTAZIONE LIVE SUL TELEFONO -->
   <div class="voting-section">
-    <h2>🏆 Votazioni Live & Premi di Serata</h2>
+    <h2>📱 Vota dal tuo Telefono</h2>
     <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;" id="voteStatusText">
-      Assegna un punteggio da 1 a 10 per ciascuna categoria ed invia i tuoi voti al server live!
+      Assegna un voto da 1 a 10 per ogni squadriglia ed invialo al sistema:
     </p>
 
     <div id="votingFormContainer">
-      
-      <!-- Categoria 1 -->
-      <div class="category-title">1. Miglior Costume Generale di Squadriglia</div>
-      <div class="vote-cards-grid" id="cat-costume-grid"></div>
-
-      <!-- Categoria 2 -->
-      <div class="category-title">2. Travestimento più Divertente / Spaventoso</div>
-      <div class="vote-cards-grid" id="cat-fun-grid"></div>
-
-      <!-- Categoria 3 -->
-      <div class="category-title">3. Miglior Urlo di Squadriglia</div>
-      <div class="vote-cards-grid" id="cat-urlo-grid"></div>
-
-      <!-- Categoria 4 -->
-      <div class="category-title">4. Miglior Sketch / Canzone attorno al Fuoco</div>
-      <div class="vote-cards-grid" id="cat-sketch-grid"></div>
-
-      <button class="send-vote-btn" onclick="submitAllVotes()">🚀 INVIA TUTTI I VOTI LIVE</button>
+      <div class="vote-cards-grid" id="voteCardsGrid">
+        <!-- Generato via JavaScript -->
+      </div>
     </div>
 
     <!-- CLASSIFICA LIVE -->
     <div class="live-leaderboard">
-      <h3 style="text-align: center; color: #38bdf8; margin-bottom: 15px;">📊 Risultati Live in Tempo Reale (Somma Totale)</h3>
+      <h3 style="text-align: center; color: #38bdf8; margin-bottom: 15px;">📊 Risultati Live in Tempo Reale</h3>
       <div id="leaderboardBars">
-        <p style="text-align: center; color: #64748b;">Caricamento della classifica live...</p>
+        <p style="text-align: center; color: #64748b;">Connessione al database live in corso...</p>
       </div>
-    </div>
-  </div>
-
-  <!-- GALLERIA FOTOGRAFICA LIVE -->
-  <div class="gallery-section">
-    <h2>📸 Galleria Fotografica della Festa</h2>
-    <p style="color: #cbd5e1; font-size: 0.9rem;">Scatta e condividi i momenti migliori direttamente dallo smartphone!</p>
-    
-    <div class="upload-box">
-      <label for="photoFileInput" class="upload-btn-label">📷 Carica Foto dal Telefono</label>
-      <input type="file" id="photoFileInput" class="file-input" accept="image/*" onchange="uploadPhoto(event)">
-      <p id="uploadStatus" style="margin-top: 10px; font-size: 0.85rem; color: #38bdf8;"></p>
-    </div>
-
-    <div class="photo-grid" id="photoGrid">
-      <!-- Immagini generate in tempo reale da Firebase Storage/DB -->
     </div>
   </div>
 
@@ -523,7 +434,7 @@ x<!DOCTYPE html>
   <footer><p>Buona Caccia & Buona Strada — Festa Scout 2026</p></footer>
 
   <script>
-    // CONFIGURAZIONE FIREBASE
+    // 1. CONFIGURAZIONE FIREBASE REALTIME DATABASE
     const firebaseConfig = {
       apiKey: "AIzaSyDummyKeyForTemplate123456789",
       authDomain: "festa-scout-2026.firebaseapp.com",
@@ -534,9 +445,9 @@ x<!DOCTYPE html>
       appId: "1:1234567890:web:abcdef123456"
     };
 
+    // Inizializza Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const storage = firebase.storage();
 
     const squads = [
       { id: "Aquile", name: "🦅 Aquile" },
@@ -546,15 +457,8 @@ x<!DOCTYPE html>
       { id: "Gufi", name: "🦉 Gufi" }
     ];
 
-    const categories = [
-      { id: "costume", containerId: "cat-costume-grid" },
-      { id: "fun", containerId: "cat-fun-grid" },
-      { id: "urlo", containerId: "cat-urlo-grid" },
-      { id: "sketch", containerId: "cat-sketch-grid" }
-    ];
-
-    // CHECKLIST LOGIC
-    function toggleCheck(checkbox) {
+    // CHECKLIST LOGIC (Salva lo stato di spunta sul telefono)
+    function toggleItem(checkbox) {
       if (checkbox.checked) {
         checkbox.parentElement.classList.add("checked");
       } else {
@@ -562,57 +466,64 @@ x<!DOCTYPE html>
       }
     }
 
-    // CREAZIONE FORM DI VOTO
+    // 2. CREA FORM DI VOTO
     function initVoteForm() {
-      const hasVoted = localStorage.getItem("hasVotedFestaScout2026");
+      const grid = document.getElementById("voteCardsGrid");
+      const hasVoted = localStorage.getItem("hasVotedFestaScout");
 
       if (hasVoted) {
         document.getElementById("votingFormContainer").innerHTML = `
-          <div style="background: rgba(46, 125, 50, 0.2); border: 1px solid #4caf50; padding: 20px; border-radius: 12px; text-align: center; margin-top: 15px;">
-            <p style="color: #4caf50; font-weight: bold; font-size: 1.1rem;">✅ Voti inviati con successo!</p>
-            <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 5px;">I tuoi punteggi sono stati sommati al database live. Segui la classifica sotto!</p>
+          <div style="background: rgba(46, 125, 50, 0.2); border: 1px solid #4caf50; padding: 15px; border-radius: 12px; text-align: center; margin-top: 15px;">
+            <p style="color: #4caf50; font-weight: bold;">✅ Hai già inviato i tuoi voti!</p>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 5px;">Guarda la classifica in basso per seguire l'andamento live registrato su tutti i dispositivi.</p>
           </div>
         `;
         return;
       }
 
-      categories.forEach(cat => {
-        const grid = document.getElementById(cat.containerId);
-        let html = "";
-        squads.forEach(sq => {
-          html += `
-            <div class="vote-card-item">
-              <strong style="color: #fff; font-size: 0.95rem;">${sq.name}</strong>
-              <select id="select-${cat.id}-${sq.id}" class="vote-select-box">
-                ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n} ${n===1?'Punto':'Punti'}</option>`).join('')}
-              </select>
-            </div>
-          `;
-        });
-        grid.innerHTML = html;
+      let html = "";
+      squads.forEach(sq => {
+        html += `
+          <div class="vote-card-item">
+            <strong style="color: #fff; font-size: 1.1rem;">${sq.name}</strong>
+            <select id="select-${sq.id}" class="vote-select-box">
+              ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n} ${n===1?'Punto':'Punti'}</option>`).join('')}
+            </select>
+          </div>
+        `;
       });
+
+      html += `
+        <div style="grid-column: 1 / -1; margin-top: 10px;">
+          <button class="send-vote-btn" onclick="submitAllVotes()">🚀 INVIA TUTTI I VOTI LIVE</button>
+        </div>
+      `;
+
+      grid.innerHTML = html;
     }
 
-    // INVIO VOTI COMPLETI
+    // 3. INVIA E SALVA I VOTI SUL DATABASE CONDIVISO
     function submitAllVotes() {
-      if (localStorage.getItem("hasVotedFestaScout2026")) {
-        alert("Hai già espresso le tue votazioni!");
+      if (localStorage.getItem("hasVotedFestaScout")) {
+        alert("Hai già votato!");
         return;
       }
 
-      categories.forEach(cat => {
-        squads.forEach(sq => {
-          const val = parseInt(document.getElementById(`select-${cat.id}-${sq.id}`).value);
-          db.ref(`votes/${sq.id}`).transaction(currentVotes => (currentVotes || 0) + val);
+      squads.forEach(sq => {
+        const val = parseInt(document.getElementById(`select-${sq.id}`).value);
+        // Transazione atomica Firebase: somma il voto al valore esistente nel cloud
+        db.ref('votes/' + sq.id).transaction(currentVotes => {
+          return (currentVotes || 0) + val;
         });
       });
 
-      localStorage.setItem("hasVotedFestaScout2026", "true");
-      alert("🎉 Tutti i tuoi voti sono stati registrati!");
+      // Salva localmente la spunta del voto effettuato
+      localStorage.setItem("hasVotedFestaScout", "true");
+      alert("🎉 Voti inviati e salvati sul cloud! La classifica si aggiornerà in tempo reale su tutti i telefoni.");
       initVoteForm();
     }
 
-    // CLASSIFICA LIVE
+    // 4. ASCOLTO LIVE: LEGGE I VOTI DAL CLOUD E AGGIORNA LA SCHERMATA DI TUTTI
     db.ref('votes').on('value', (snapshot) => {
       const data = snapshot.val() || {};
       renderLiveLeaderboard(data);
@@ -647,48 +558,7 @@ x<!DOCTYPE html>
       container.innerHTML = html;
     }
 
-    // UPLOAD FOTO LIVE
-    function uploadPhoto(event) {
-      const file = event.target.files[0];
-      const statusText = document.getElementById("uploadStatus");
-
-      if (!file) return;
-
-      statusText.innerText = "Caricamento foto in corso...";
-
-      const fileName = Date.now() + "_" + file.name;
-      const storageRef = storage.ref("gallery/" + fileName);
-
-      storageRef.put(file).then(snapshot => {
-        return snapshot.ref.getDownloadURL();
-      }).then(downloadURL => {
-        db.ref("photos").push({ url: downloadURL, timestamp: Date.now() });
-        statusText.innerText = "✅ Foto caricata con successo!";
-        setTimeout(() => { statusText.innerText = ""; }, 3000);
-      }).catch(error => {
-        statusText.innerText = "❌ Errore durante il caricamento.";
-        console.error(error);
-      });
-    }
-
-    // ASCOLTO FOTO CARICATE
-    db.ref("photos").on("value", (snapshot) => {
-      const photoGrid = document.getElementById("photoGrid");
-      const photos = snapshot.val() || {};
-      let html = "";
-
-      Object.values(photos).reverse().forEach(item => {
-        html += `
-          <div class="photo-item">
-            <img src="${item.url}" alt="Foto Festa Scout" loading="lazy">
-          </div>
-        `;
-      });
-
-      photoGrid.innerHTML = html || "<p style='grid-column: 1/-1; color: #64748b;'>Nessuna foto caricata finora. Sii il primo!</p>";
-    });
-
-    // COUNTDOWN
+    // 5. COUNTDOWN LOGIC
     const targetDate = new Date("August 30, 2026 18:00:00").getTime();
     setInterval(() => {
       const now = new Date().getTime();
