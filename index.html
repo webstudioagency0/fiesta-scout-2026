@@ -8,8 +8,10 @@
     :root {
       --primary: #2e7d32;
       --accent: #ff9800;
+      --accent-glow: rgba(255, 152, 0, 0.4);
       --bg: #0f172a;
       --text: #f8fafc;
+      --card-bg: rgba(30, 41, 59, 0.7);
     }
 
     * {
@@ -25,7 +27,7 @@
       overflow-x: hidden;
     }
 
-    /* SFONDO ANIMATO */
+    /* SFONDO ANIMATO CON PARTICELLE */
     .bg-particles {
       position: fixed;
       top: 0;
@@ -53,7 +55,7 @@
 
     /* HEADER ANIMATO */
     header {
-      min-height: 50vh;
+      min-height: 45vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -181,83 +183,119 @@
       line-height: 1.6;
     }
 
-    /* GRIGLIA SQUADRIGLIE CON SCHEDE FLUTTUANTI */
-    .sq-title {
+    /* SEZIONE SQUADRIGLIE EVOLUTA */
+    .sq-header {
       text-align: center;
-      font-size: 2.5rem;
-      margin: 60px 0 20px;
+      margin: 70px 0 30px;
+    }
+
+    .sq-title {
+      font-size: 2.8rem;
       color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .sq-subtitle {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      margin-top: 8px;
     }
 
     .squad-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
-      max-width: 1100px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
       margin: 0 auto 60px;
       padding: 0 20px;
     }
 
     .squad-card {
-      background: rgba(255, 255, 255, 0.07);
-      border-radius: 15px;
-      padding: 25px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px 25px;
       text-align: center;
-      border: 2px solid transparent;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
       position: relative;
       overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .squad-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .squad-card:hover::before {
+      left: 100%;
     }
 
     .squad-card:hover {
-      transform: translateY(-15px) scale(1.03);
+      transform: translateY(-12px) scale(1.02);
       border-color: var(--accent);
-      box-shadow: 0 15px 30px rgba(255, 152, 0, 0.3);
-      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 15px 35px var(--accent-glow);
+    }
+
+    .squad-icon-wrap {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 20px;
+      background: rgba(255, 152, 0, 0.1);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px var(--accent-glow);
+      transition: transform 0.4s ease;
+    }
+
+    .squad-card:hover .squad-icon-wrap {
+      transform: rotate(10deg) scale(1.1);
+      background: rgba(255, 152, 0, 0.25);
     }
 
     .squad-icon {
-      font-size: 3.5rem;
-      margin-bottom: 15px;
-      display: inline-block;
-      animation: spinIcon 8s infinite linear;
-    }
-
-    .squad-card:hover .squad-icon {
-      animation: bounce 0.6s infinite alternate;
-    }
-
-    @keyframes spinIcon {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes bounce {
-      from { transform: translateY(0); }
-      to { transform: translateY(-15px); }
+      font-size: 3.2rem;
+      line-height: 1;
     }
 
     .squad-name {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      color: #fff;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #ffffff;
+      letter-spacing: 0.5px;
     }
 
     .theme-tag {
       display: inline-block;
-      background: var(--primary);
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.9rem;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 25px;
+      font-size: 0.88rem;
       font-weight: bold;
-      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
     }
 
     .dress-code {
       font-size: 0.95rem;
       color: #cbd5e1;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     /* SEZIONE VOTAZIONE DINAMICA */
@@ -280,7 +318,7 @@
 
     .vote-options {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 15px;
       margin-top: 25px;
     }
@@ -289,9 +327,9 @@
       background: rgba(255, 255, 255, 0.1);
       border: 2px solid #38bdf8;
       color: #fff;
-      padding: 15px;
+      padding: 15px 10px;
       border-radius: 12px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s;
@@ -434,37 +472,59 @@
     </p>
   </section>
 
-  <!-- SQUADRIGLIE -->
-  <h2 class="sq-title">Temi e Dress Code Squadriglie</h2>
+  <!-- SEZIONE SQUADRIGLIE -->
+  <div class="sq-header">
+    <h2 class="sq-title">🎭 Temi & Dress Code 🎭</h2>
+    <p class="sq-subtitle">Ogni squadriglia deve rispettare rigorosamente il proprio tema!</p>
+  </div>
 
   <div class="squad-container">
+    
     <div class="squad-card">
-      <div class="squad-icon">🦅</div>
+      <div class="squad-icon-wrap">
+        <span class="squad-icon">🦅</span>
+      </div>
       <h3 class="squad-name">Aquile</h3>
       <span class="theme-tag">Tema: Supereroi</span>
-      <p class="dress-code">Mantelli sfavillanti, maschere, stemmi sul petto e calzamaglie coloratissime. Portate il vostro superpotere!</p>
+      <p class="dress-code">Mantelli sfavillanti, maschere, stemmi sul petto e calzamaglies colorate. Mostrate i vostri superpoteri!</p>
     </div>
 
     <div class="squad-card">
-      <div class="squad-icon">🐺</div>
-      <h3 class="squad-name">Lupi</h3>
-      <span class="theme-tag">Tema: Pirati dei Caraibi</span>
-      <p class="dress-code">Bandane, bende sull'occhio, stivali ruggenti e uncini. Pronti a conquistar la mappa del tesoro!</p>
+      <div class="squad-icon-wrap">
+        <span class="squad-icon">🦇</span>
+      </div>
+      <h3 class="squad-name">Pipistrelli</h3>
+      <span class="theme-tag">Tema: Notte & Vampiri</span>
+      <p class="dress-code">Abiti neri e oscuri, mantelli a punta, canini affilati e trucco spettrale. Padroni delle tenebre!</p>
     </div>
 
     <div class="squad-card">
-      <div class="squad-icon">🦊</div>
-      <h3 class="squad-name">Volpi</h3>
-      <span class="theme-tag">Tema: Cyberpunk & Futuro</span>
-      <p class="dress-code">Occhiali da sole scuri, luci a LED, abiti metallizzati e dettagli tecnologici direttamente dal 3000.</p>
+      <div class="squad-icon-wrap">
+        <span class="squad-icon">🐆</span>
+      </div>
+      <h3 class="squad-name">Pantere</h3>
+      <span class="theme-tag">Tema: Giungla & Wild</span>
+      <p class="dress-code">Stampe maculate, pittura facciale felina, mimetica e dettagli selvaggi. Pronte all'agguato!</p>
     </div>
 
     <div class="squad-card">
-      <div class="squad-icon">🦬</div>
-      <h3 class="squad-name">Bisonte</h3>
-      <span class="theme-tag">Tema: Antico Egitto</span>
-      <p class="dress-code">Tuniche bianche, accessori dorati, trucco con eyeliner marcato e copricapi da Faraoni o Mummie.</p>
+      <div class="squad-icon-wrap">
+        <span class="squad-icon">🐿️</span>
+      </div>
+      <h3 class="squad-name">Scoiattoli</h3>
+      <span class="theme-tag">Tema: Esploratori del Futuro</span>
+      <p class="dress-code">Tute spaziali dorate, occhiali tecnologici, antenne e luci a LED. Pronti al salto nel domani!</p>
     </div>
+
+    <div class="squad-card">
+      <div class="squad-icon-wrap">
+        <span class="squad-icon">🦉</span>
+      </div>
+      <h3 class="squad-name">Gufi</h3>
+      <span class="theme-tag">Tema: Mago & Stregoneria</span>
+      <p class="dress-code">Cappelli a punta, bacchette magiche, tuniche eleganti e libri di incantesimi. La magia è tra noi!</p>
+    </div>
+
   </div>
 
   <!-- SEZIONE VOTAZIONE AUTOMATICA -->
@@ -487,7 +547,7 @@
 
   <!-- SCRIPT LOGICA VOTI E COUNTDOWN -->
   <script>
-    // 1. COUNTDOWN GENERALE (impostato al 30 Agosto 2026 ore 18:00)
+    // 1. COUNTDOWN GENERALE (30 Agosto 2026 ore 18:00)
     const targetDate = new Date("August 30, 2026 18:00:00").getTime();
 
     function updateCountdown() {
@@ -512,14 +572,15 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // 2. GESTIONE VOTAZIONE AUTOMATICA (30 AGOSTO 18:00 - 20:00)
+    // 2. GESTIONE VOTAZIONE AUTOMATICA SQUADRIGLIE (30 AGOSTO 18:00 - 20:00)
     const votingSection = document.getElementById("votingSection");
 
     let votes = JSON.parse(localStorage.getItem("scoutVotes")) || {
       "Aquile": 12,
-      "Lupi": 18,
-      "Volpi": 15,
-      "Bisonte": 10
+      "Pipistrelli": 15,
+      "Pantere": 18,
+      "Scoiattoli": 10,
+      "Gufi": 14
     };
 
     function checkVotingStatus() {
@@ -549,9 +610,10 @@
             <p>Seleziona la squadriglia che ha realizzato il travestimento più bello:</p>
             <div class="vote-options">
               <button class="vote-btn" onclick="submitVote('Aquile')">🦅 Aquile</button>
-              <button class="vote-btn" onclick="submitVote('Lupi')">🐺 Lupi</button>
-              <button class="vote-btn" onclick="submitVote('Volpi')">🦊 Volpi</button>
-              <button class="vote-btn" onclick="submitVote('Bisonte')">🦬 Bisonte</button>
+              <button class="vote-btn" onclick="submitVote('Pipistrelli')">🦇 Pipistrelli</button>
+              <button class="vote-btn" onclick="submitVote('Pantere')">🐆 Pantere</button>
+              <button class="vote-btn" onclick="submitVote('Scoiattoli')">🐿️ Scoiattoli</button>
+              <button class="vote-btn" onclick="submitVote('Gufi')">🦉 Gufi</button>
             </div>
             <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 15px;">Puoi esprimere un solo voto dal tuo dispositivo.</p>
           `;
