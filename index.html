@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grande Festa Scout 2026</title>
-  
-  <!-- Firebase SDKs (Librerie Google per il Database Live) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
   <style>
     :root {
       --primary: #2e7d32;
@@ -60,7 +55,7 @@
 
     /* HEADER */
     header {
-      min-height: 35vh;
+      min-height: 40vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -70,14 +65,14 @@
     }
 
     .hero-title {
-      font-size: 3rem;
+      font-size: 3.2rem;
       color: var(--accent);
       text-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
-      animation: pulse 2.5s infinite alternate;
+      animation: pulse 2.5s infinite alternate, slideDown 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .hero-subtitle {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-top: 15px;
     }
 
@@ -87,13 +82,19 @@
       border: 1px solid var(--accent);
       padding: 12px 25px;
       border-radius: 30px;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       font-weight: bold;
+      color: #fff;
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.03); }
+      0% { transform: scale(1); text-shadow: 0 0 10px rgba(255,152,0,0.5); }
+      100% { transform: scale(1.05); text-shadow: 0 0 30px rgba(255,152,0,1); }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     /* COUNTDOWN */
@@ -104,7 +105,16 @@
       background: rgba(255, 255, 255, 0.05);
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       text-align: center;
+    }
+
+    .countdown-title {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .timer {
@@ -119,11 +129,11 @@
       border: 2px solid var(--primary);
       border-radius: 12px;
       padding: 15px;
-      min-width: 80px;
+      min-width: 85px;
     }
 
     .timer-number {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: bold;
       color: #38bdf8;
     }
@@ -131,128 +141,145 @@
     .timer-label {
       font-size: 0.8rem;
       color: #94a3b8;
+      margin-top: 5px;
+      text-transform: uppercase;
+    }
+
+    /* SEZIONE DESCRIZIONE */
+    .section-desc {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-desc h2 {
+      color: #4caf50;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+    }
+
+    .section-desc p {
+      font-size: 1.05rem;
+      line-height: 1.6;
     }
 
     /* SEZIONE SQUADRIGLIE */
+    .sq-header {
+      text-align: center;
+      margin: 60px 0 30px;
+    }
+
+    .sq-title {
+      font-size: 2.5rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .sq-subtitle {
+      color: #94a3b8;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
     .squad-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
       max-width: 1200px;
-      margin: 30px auto;
+      margin: 0 auto 50px;
       padding: 0 20px;
     }
 
     .squad-card {
       background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
+      border-radius: 20px;
+      padding: 25px 20px;
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .squad-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent);
     }
 
     .squad-icon {
-      font-size: 2.5rem;
-      margin-bottom: 8px;
+      font-size: 3rem;
+      margin-bottom: 10px;
       display: block;
     }
 
     .squad-name {
-      font-size: 1.4rem;
-      color: #fff;
-      margin-bottom: 6px;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #ffffff;
     }
 
     .theme-tag {
-      background: var(--primary);
+      display: inline-block;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
       color: #fff;
-      padding: 4px 12px;
-      border-radius: 15px;
-      font-size: 0.8rem;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
       font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 12px;
     }
 
-    /* VOTAZIONE ONLINE LIVE */
+    .dress-code {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    /* SEZIONE VOTAZIONE PUBBLICA */
     .voting-section {
       max-width: 800px;
       margin: 40px auto;
       padding: 30px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 2px solid var(--accent);
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px dashed var(--accent);
       border-radius: 20px;
-      box-shadow: 0 0 25px rgba(255, 152, 0, 0.3);
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 152, 0, 0.2);
     }
 
     .voting-section h2 {
       color: var(--accent);
-      text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
     }
 
-    .vote-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .vote-card-item {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-    }
-
-    .vote-select-box {
-      width: 100%;
-      background: #0f172a;
-      color: #fff;
-      border: 1px solid #38bdf8;
-      padding: 8px;
-      border-radius: 8px;
-      margin: 10px 0;
-      font-size: 0.95rem;
-    }
-
-    .send-vote-btn {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .send-vote-btn:hover {
-      background: #4caf50;
-    }
-
-    /* CLASSIFICA TEMPO REALE */
-    .live-leaderboard {
-      margin-top: 35px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 25px;
+    .results-container {
+      margin-top: 25px;
+      text-align: left;
     }
 
     .result-bar-wrap {
-      margin-bottom: 15px;
+      margin-bottom: 18px;
     }
 
     .result-info {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       font-weight: bold;
+      font-size: 1.05rem;
     }
 
     .bar-bg {
-      background: rgba(255, 255, 255, 0.1);
-      height: 20px;
-      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      height: 22px;
+      border-radius: 11px;
       overflow: hidden;
     }
 
@@ -260,16 +287,138 @@
       background: linear-gradient(90deg, #2e7d32, #ff9800);
       height: 100%;
       width: 0%;
-      transition: width 0.5s ease;
+      transition: width 0.8s ease;
     }
 
-    /* BANNER AGENZIA */
-    .agency-banner {
-      background: #1e293b;
-      border-top: 2px solid var(--accent);
-      padding: 15px;
+    /* PANNELLO ADMIN (SIMULAZIONE VOTI) */
+    .admin-panel {
+      max-width: 800px;
+      margin: 30px auto 60px;
+      padding: 25px;
+      background: rgba(30, 41, 59, 0.95);
+      border: 2px solid #38bdf8;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .admin-title {
+      color: #38bdf8;
+      font-size: 1.4rem;
       text-align: center;
-      margin-top: 50px;
+      margin-bottom: 15px;
+    }
+
+    .admin-login-wrap {
+      text-align: center;
+    }
+
+    .admin-btn {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .admin-btn:hover {
+      background: #7dd3fc;
+    }
+
+    .admin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .admin-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .admin-sq-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      min-width: 150px;
+    }
+
+    .admin-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .vote-select {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #38bdf8;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .add-vote-btn {
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .add-vote-btn:hover {
+      background: #4caf50;
+    }
+
+    .reset-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .reset-btn:hover {
+      background: #ef4444;
+    }
+
+    /* BANNER FIRMA */
+    .agency-banner {
+      background: linear-gradient(90deg, #1e293b, #334155, #1e293b);
+      border-top: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding: 15px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .agency-banner p {
+      margin: 0;
+      font-size: 1rem;
+      color: #f8fafc;
+    }
+
+    .agency-banner strong {
+      color: var(--accent);
     }
 
     .agency-banner a {
@@ -280,88 +429,176 @@
 
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 30px;
+      font-size: 0.9rem;
       color: #64748b;
-      font-size: 0.85rem;
     }
   </style>
 </head>
 <body>
 
+  <!-- SFONDO ANIMATO -->
   <div class="bg-particles">
-    <div class="particle" style="top: 20%; left: 15%;"></div>
-    <div class="particle" style="top: 70%; left: 80%;"></div>
-    <div class="particle" style="top: 40%; left: 50%;"></div>
+    <div class="particle" style="top: 20%; left: 15%; animation-delay: 0s;"></div>
+    <div class="particle" style="top: 70%; left: 80%; animation-delay: 1s;"></div>
+    <div class="particle" style="top: 40%; left: 50%; animation-delay: 2s;"></div>
+    <div class="particle" style="top: 80%; left: 25%; animation-delay: 3s;"></div>
+    <div class="particle" style="top: 10%; left: 85%; animation-delay: 4s;"></div>
   </div>
 
+  <!-- INTESTAZIONE -->
   <header>
-    <h1 class="hero-title">🔥 FESTA SCOUT 2026 🔥</h1>
-    <p class="hero-subtitle">Votazione live costumi di squadriglia</p>
-    <div class="location-info">📍 Casa di Clara — Ore 18:00</div>
+    <h1 class="hero-title">🔥 LA FESTA DI GRUPPO 🔥</h1>
+    <p class="hero-subtitle">Una serata di fuoco, giochi, musica e travestimenti spettacolari!</p>
+    <div class="location-info">📍 Incontro presso Casa di Clara — Ore 18:00</div>
   </header>
 
+  <!-- COUNTDOWN -->
   <div class="countdown-container">
+    <h3 class="countdown-title">⏳ Tempo rimasto all'inizio ⏳</h3>
     <div class="timer">
-      <div class="timer-box"><span class="timer-number" id="days">00</span><div class="timer-label">Giorni</div></div>
-      <div class="timer-box"><span class="timer-number" id="hours">00</span><div class="timer-label">Ore</div></div>
-      <div class="timer-box"><span class="timer-number" id="minutes">00</span><div class="timer-label">Minuti</div></div>
-      <div class="timer-box"><span class="timer-number" id="seconds">00</span><div class="timer-label">Secondi</div></div>
+      <div class="timer-box">
+        <span class="timer-number" id="days">00</span>
+        <div class="timer-label">Giorni</div>
+      </div>
+      <div class="timer-box">
+        <span class="timer-number" id="hours">00</span>
+        <div class="timer-label">Ore</div>
+      </div>
+      <div class="timer-box">
+        <span class="timer-number" id="minutes">00</span>
+        <div class="timer-label">Minuti</div>
+      </div>
+      <div class="timer-box">
+        <span class="timer-number" id="seconds">00</span>
+        <div class="timer-label">Secondi</div>
+      </div>
     </div>
+  </div>
+
+  <!-- SEZIONE DESCRIZIONE -->
+  <section class="section-desc">
+    <h2>Che cos'è la Festa Scout?</h2>
+    <p>
+      La Festa di Gruppo è l'evento più travolgente dell'anno! Ci vedremo direttamente a <strong>Casa di Clara alle ore 18:00</strong> per celebrare con giochi a tappe, grandi sfide, musica e il classico <strong>fuoco di bivacco</strong>.
+    </p>
+    <br>
+    <p>
+      Quest'anno ogni squadriglia avrà un <strong>tema unico e obbligatorio</strong> per il travestimento. Preparate i vostri costumi: la squadriglia più originale vincerà il trofeo della serata!
+    </p>
+  </section>
+
+  <!-- SEZIONE SQUADRIGLIE -->
+  <div class="sq-header">
+    <h2 class="sq-title">🎭 Temi & Dress Code 🎭</h2>
+    <p class="sq-subtitle">Ogni squadriglia deve rispettare rigorosamente il proprio tema!</p>
   </div>
 
   <div class="squad-container">
-    <div class="squad-card"><span class="squad-icon">🦅</span><h3 class="squad-name">Aquile</h3><span class="theme-tag">Supereroi</span></div>
-    <div class="squad-card"><span class="squad-icon">🦇</span><h3 class="squad-name">Pipistrelli</h3><span class="theme-tag">Vampiri</span></div>
-    <div class="squad-card"><span class="squad-icon">🐆</span><h3 class="squad-name">Pantere</h3><span class="theme-tag">Giungla</span></div>
-    <div class="squad-card"><span class="squad-icon">🐿️</span><h3 class="squad-name">Scoiattoli</h3><span class="theme-tag">Futuro</span></div>
-    <div class="squad-card"><span class="squad-icon">🦉</span><h3 class="squad-name">Gufi</h3><span class="theme-tag">Magia</span></div>
-  </div>
-
-  <!-- PANNELLO VOTAZIONE LIVE SUL TELEFONO -->
-  <div class="voting-section">
-    <h2>📱 Vota dal tuo Telefono</h2>
-    <p style="text-align: center; color: #94a3b8; font-size: 0.9rem;" id="voteStatusText">
-      Assegna un voto da 1 a 10 per ogni squadriglia ed invialo al sistema:
-    </p>
-
-    <div id="votingFormContainer">
-      <div class="vote-cards-grid" id="voteCardsGrid">
-        <!-- Generato via JavaScript -->
-      </div>
+    <div class="squad-card">
+      <span class="squad-icon">🦅</span>
+      <h3 class="squad-name">Aquile</h3>
+      <span class="theme-tag">Supereroi</span>
+      <p class="dress-code">Mantelli sfavillanti, maschere, stemmi sul petto e calzamaglies colorate.</p>
     </div>
 
-    <!-- CLASSIFICA LIVE -->
-    <div class="live-leaderboard">
-      <h3 style="text-align: center; color: #38bdf8; margin-bottom: 15px;">📊 Risultati Live in Tempo Reale</h3>
-      <div id="leaderboardBars">
-        <p style="text-align: center; color: #64748b;">Connessione al database live in corso...</p>
-      </div>
+    <div class="squad-card">
+      <span class="squad-icon">🦇</span>
+      <h3 class="squad-name">Pipistrelli</h3>
+      <span class="theme-tag">Notte & Vampiri</span>
+      <p class="dress-code">Abiti neri e oscuri, mantelli a punta, canini affilati e trucco spettrale.</p>
+    </div>
+
+    <div class="squad-card">
+      <span class="squad-icon">🐆</span>
+      <h3 class="squad-name">Pantere</h3>
+      <span class="theme-tag">Giungla & Wild</span>
+      <p class="dress-code">Stampe maculate, pittura facciale felina, mimetica e dettagli selvaggi.</p>
+    </div>
+
+    <div class="squad-card">
+      <span class="squad-icon">🐿️</span>
+      <h3 class="squad-name">Scoiattoli</h3>
+      <span class="theme-tag">Esploratori del Futuro</span>
+      <p class="dress-code">Tute spaziali dorate, occhiali tecnologici, antenne e luci a LED.</p>
+    </div>
+
+    <div class="squad-card">
+      <span class="squad-icon">🦉</span>
+      <h3 class="squad-name">Gufi</h3>
+      <span class="theme-tag">Mago & Stregoneria</span>
+      <p class="dress-code">Cappelli a punta, bacchette magiche, tuniche eleganti e libri di incantesimi.</p>
     </div>
   </div>
 
+  <!-- SEZIONE VOTAZIONE PUBBLICA -->
+  <div class="voting-section" id="votingPublic">
+    <!-- Risultati live caricati qui da JavaScript -->
+  </div>
+
+  <!-- PANNELLO ADMIN (SIMULAZIONE CON PASSWORD) -->
+  <div class="admin-panel">
+    <h3 class="admin-title">🔒 Area Riservata Staff / Admin</h3>
+    
+    <div id="adminLogin" class="admin-login-wrap">
+      <p style="margin-bottom: 15px; color: #cbd5e1;">Inserisci la password per simulare i voti da 1 a 10 per ogni squadriglia:</p>
+      <button class="admin-btn" onclick="unlockAdmin()">Inserisci Password Admin</button>
+    </div>
+
+    <div id="adminControls" style="display: none;">
+      <p style="color: #4caf50; font-weight: bold; text-align: center; margin-bottom: 15px;">
+        ✅ Accesso effettuato! Sotto trovi tutte le squadriglie per inserire i voti (da 1 a 10):
+      </p>
+      
+      <div id="adminSquadsList" class="admin-list">
+        <!-- Generato dinamico da JS -->
+      </div>
+
+      <button class="reset-btn" onclick="resetVotes()">⚠️ Azzera Tutti i Voti</button>
+    </div>
+  </div>
+
+  <!-- BANNER FIRMA/CREDITI -->
   <div class="agency-banner">
-    <p>⚡ Creato da <strong>webstudioagency0</strong> (<em>Mattia Spensieri</em>) — <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a></p>
+    <p>
+      ⚡ Sito interamente creato da <strong>webstudioagency0</strong> (<em>Mattia Spensieri</em>) 
+      — <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a>
+    </p>
   </div>
 
-  <footer><p>Buona Caccia & Buona Strada — Festa Scout 2026</p></footer>
+  <!-- FOOTER -->
+  <footer>
+    <p>Buona Caccia & Buona Strada — Sito della Festa Scout 2026</p>
+  </footer>
 
+  <!-- SCRIPT LOGICA -->
   <script>
-    // 1. CONFIGURAZIONE FIREBASE REALTIME DATABASE (Gratuito di Google)
-    // Sostituisci i dati sottostanti con le chiavi del tuo progetto Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDummyKeyForTemplate123456789",
-      authDomain: "festa-scout-2026.firebaseapp.com",
-      databaseURL: "https://festa-scout-2026-default-rtdb.firebaseio.com",
-      projectId: "festa-scout-2026",
-      storageBucket: "festa-scout-2026.appspot.com",
-      messagingSenderId: "1234567890",
-      appId: "1:1234567890:web:abcdef123456"
-    };
+    // 1. COUNTDOWN GENERALE (30 Agosto 2026 ore 18:00)
+    const targetDate = new Date("August 30, 2026 18:00:00").getTime();
 
-    // Inizializza Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
 
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+        document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+        document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+        document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+      } else {
+        document.querySelector(".countdown-container").innerHTML = "<h2 style='color: var(--accent);'>🎉 LA FESTA È INIZIATA! 🎉</h2>";
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 2. DATI SQUADRIGLIE E VOTI INIZIALI
     const squads = [
       { id: "Aquile", name: "🦅 Aquile" },
       { id: "Pipistrelli", name: "🦇 Pipistrelli" },
@@ -370,87 +607,54 @@
       { id: "Gufi", name: "🦉 Gufi" }
     ];
 
-    // 2. CREA FORM DI VOTO
-    function initVoteForm() {
-      const grid = document.getElementById("voteCardsGrid");
-      const hasVoted = localStorage.getItem("hasVotedFestaScout");
+    let votes = JSON.parse(localStorage.getItem("scoutSimVotes")) || {
+      "Aquile": 0,
+      "Pipistrelli": 0,
+      "Pantere": 0,
+      "Scoiattoli": 0,
+      "Gufi": 0
+    };
 
-      if (hasVoted) {
-        document.getElementById("votingFormContainer").innerHTML = `
-          <div style="background: rgba(46, 125, 50, 0.2); border: 1px solid #4caf50; padding: 15px; border-radius: 12px; text-align: center; margin-top: 15px;">
-            <p style="color: #4caf50; font-weight: bold;">✅ Hai già inviato i tuoi voti!</p>
-            <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 5px;">Guarda la classifica in basso per seguire l'andamento live.</p>
-          </div>
-        `;
-        return;
-      }
+    // 3. AGGIORNA LA VISTA PUBBLICA DEI RISULTATI
+    function renderPublicResults() {
+      const votingPublic = document.getElementById("votingPublic");
 
-      let html = "";
-      squads.forEach(sq => {
-        html += `
-          <div class="vote-card-item">
-            <strong style="color: #fff; font-size: 1.1rem;">${sq.name}</strong>
-            <select id="select-${sq.id}" class="vote-select-box">
-              ${[1,2,3,4,5,6,7,8,9,10].map(n => `<option value="${n}">${n} ${n===1?'Punto':'Punti'}</option>`).join('')}
-            </select>
-          </div>
-        `;
-      });
-
-      html += `
-        <div style="grid-column: 1 / -1; margin-top: 10px;">
-          <button class="send-vote-btn" onclick="submitAllVotes()">🚀 INVIA TUTTI I VOTI LIVE</button>
-        </div>
-      `;
-
-      grid.innerHTML = html;
-    }
-
-    // 3. INVIA I VOTI AL DATABASE LIVE
-    function submitAllVotes() {
-      if (localStorage.getItem("hasVotedFestaScout")) {
-        alert("Hai già votato!");
-        return;
-      }
-
-      squads.forEach(sq => {
-        const val = parseInt(document.getElementById(`select-${sq.id}`).value);
-        // Incrementa la somma totale su Firebase tramite transazione atomica
-        db.ref('votes/' + sq.id).transaction(currentVotes => {
-          return (currentVotes || 0) + val;
-        });
-      });
-
-      // Segna sul telefono dell'utente che ha votato
-      localStorage.setItem("hasVotedFestaScout", "true");
-      alert("🎉 Voti inviati con successo! La classifica si aggiornerà per tutti.");
-      initVoteForm();
-    }
-
-    // 4. ASCOLTO IN TEMPO REALE DEGLI AGGIORNAMENTI DI VOTO
-    db.ref('votes').on('value', (snapshot) => {
-      const data = snapshot.val() || {};
-      renderLiveLeaderboard(data);
-    });
-
-    function renderLiveLeaderboard(data) {
-      const container = document.getElementById("leaderboardBars");
       let totalPoints = 0;
+      let winner = "";
+      let maxPoints = -1;
+
+      for (let sq in votes) {
+        totalPoints += votes[sq];
+        if (votes[sq] > maxPoints && votes[sq] > 0) {
+          maxPoints = votes[sq];
+          winner = sq;
+        }
+      }
+
+      let html = `<h2>📊 Classifica e Votazioni Live 📊</h2>`;
+
+      if (winner !== "") {
+        html += `
+          <div style="background: rgba(255,152,0,0.15); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; margin: 15px 0;">
+            <p style="color: #cbd5e1; font-size: 0.9rem; text-transform: uppercase;">Attualmente al Primo Posto:</p>
+            <h3 style="color: var(--accent); font-size: 2rem; margin-top: 5px;">🏆 ${winner.toUpperCase()} (${maxPoints} punti)</h3>
+          </div>
+        `;
+      } else {
+        html += `<p style="color: #94a3b8; margin-top: 10px;">Nessun voto inserito al momento. Usa la sezione Admin sotto per inserire i voti!</p>`;
+      }
+
+      html += `<div class="results-container">`;
 
       squads.forEach(sq => {
-        totalPoints += (data[sq.id] || 0);
-      });
-
-      let html = "";
-      squads.forEach(sq => {
-        const score = data[sq.id] || 0;
-        const percent = totalPoints > 0 ? Math.round((score / totalPoints) * 100) : 0;
+        let currentVotes = votes[sq.id] || 0;
+        let percent = totalPoints > 0 ? Math.round((currentVotes / totalPoints) * 100) : 0;
 
         html += `
           <div class="result-bar-wrap">
             <div class="result-info">
               <span>${sq.name}</span>
-              <span>${score} Punti Totali (${percent}%)</span>
+              <span>${currentVotes} Voti / Punti (${percent}%)</span>
             </div>
             <div class="bar-bg">
               <div class="bar-fill" style="width: ${percent}%;"></div>
@@ -459,23 +663,81 @@
         `;
       });
 
+      html += `</div>`;
+      votingPublic.innerHTML = html;
+    }
+
+    // 4. PANNELLO ADMIN (PASSWORD & CONTROLLI)
+    const PASS_ADMIN = "admin2026";
+
+    function unlockAdmin() {
+      const inputPass = prompt("Inserisci la Password Amministratore:");
+      if (inputPass === PASS_ADMIN) {
+        document.getElementById("adminLogin").style.display = "none";
+        document.getElementById("adminControls").style.display = "block";
+        renderAdminList();
+      } else if (inputPass !== null) {
+        alert("❌ Password errata! Riprova.");
+      }
+    }
+
+    function renderAdminList() {
+      const container = document.getElementById("adminSquadsList");
+      let html = "";
+
+      squads.forEach(sq => {
+        html += `
+          <div class="admin-item">
+            <span class="admin-sq-name">${sq.name}</span>
+            <div class="admin-controls">
+              <label for="voteSelect-${sq.id}" style="font-size: 0.9rem; color: #cbd5e1;">Aggiungi voto:</label>
+              <select id="voteSelect-${sq.id}" class="vote-select">
+                <option value="1">1 Punto</option>
+                <option value="2">2 Punti</option>
+                <option value="3">3 Punti</option>
+                <option value="4">4 Punti</option>
+                <option value="5">5 Punti</option>
+                <option value="6">6 Punti</option>
+                <option value="7">7 Punti</option>
+                <option value="8">8 Punti</option>
+                <option value="9">9 Punti</option>
+                <option value="10" selected>10 Punti</option>
+              </select>
+              <button class="add-vote-btn" onclick="addVotes('${sq.id}')">+ Assegna</button>
+            </div>
+          </div>
+        `;
+      });
+
       container.innerHTML = html;
     }
 
-    // 5. COUNTDOWN LOGIC
-    const targetDate = new Date("August 30, 2026 18:00:00").getTime();
-    setInterval(() => {
-      const now = new Date().getTime();
-      const diff = targetDate - now;
-      if (diff > 0) {
-        document.getElementById("days").innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
-        document.getElementById("hours").innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        document.getElementById("minutes").innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        document.getElementById("seconds").innerText = Math.floor((diff % (1000 * 60)) / 1000);
-      }
-    }, 1000);
+    function addVotes(squadId) {
+      const select = document.getElementById(`voteSelect-${squadId}`);
+      const valToAdd = parseInt(select.value);
 
-    initVoteForm();
+      votes[squadId] = (votes[squadId] || 0) + valToAdd;
+      localStorage.setItem("scoutSimVotes", JSON.stringify(votes));
+      renderPublicResults();
+    }
+
+    function resetVotes() {
+      if (confirm("Sei sicuro di voler azzerare tutti i voti delle squadriglie?")) {
+        votes = {
+          "Aquile": 0,
+          "Pipistrelli": 0,
+          "Pantere": 0,
+          "Scoiattoli": 0,
+          "Gufi": 0
+        };
+        localStorage.setItem("scoutSimVotes", JSON.stringify(votes));
+        renderPublicResults();
+      }
+    }
+
+    // Inizializza visualizzazione
+    renderPublicResults();
   </script>
+
 </body>
 </html>
