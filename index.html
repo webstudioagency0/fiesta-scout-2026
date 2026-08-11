@@ -53,13 +53,13 @@
 
     /* HEADER ANIMATO */
     header {
-      min-height: 80vh;
+      min-height: 50vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 20px;
+      padding: 40px 20px 20px;
       position: relative;
     }
 
@@ -74,6 +74,18 @@
       font-size: 1.5rem;
       margin-top: 15px;
       animation: fadeIn 2s ease-in;
+    }
+
+    .location-info {
+      margin-top: 20px;
+      background: rgba(255, 152, 0, 0.15);
+      border: 1px solid var(--accent);
+      padding: 12px 25px;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      animation: pulse 2s infinite alternate;
     }
 
     @keyframes pulse {
@@ -91,6 +103,61 @@
       to { opacity: 1; }
     }
 
+    /* COUNTDOWN SECTION */
+    .countdown-container {
+      max-width: 700px;
+      margin: 20px auto 40px;
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .countdown-title {
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .timer {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .timer-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      padding: 15px;
+      min-width: 90px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+
+    .timer-box:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+    }
+
+    .timer-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #38bdf8;
+    }
+
+    .timer-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 5px;
+      text-transform: uppercase;
+    }
+
     /* SEZIONE DESCRIZIONE */
     .section-desc {
       max-width: 800px;
@@ -101,7 +168,6 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      animation: floatSlow 4s infinite ease-in-out;
     }
 
     .section-desc h2 {
@@ -113,11 +179,6 @@
     .section-desc p {
       font-size: 1.1rem;
       line-height: 1.6;
-    }
-
-    @keyframes floatSlow {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
     }
 
     /* GRIGLIA SQUADRIGLIE CON SCHEDE FLUTTUANTI */
@@ -199,17 +260,130 @@
       line-height: 1.4;
     }
 
+    /* SEZIONE VOTAZIONE DINAMICA */
+    .voting-section {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 30px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px dashed var(--accent);
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 152, 0, 0.2);
+    }
+
+    .voting-section h2 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 2rem;
+    }
+
+    .vote-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .vote-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid #38bdf8;
+      color: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .vote-btn:hover {
+      background: #38bdf8;
+      color: #0f172a;
+      transform: scale(1.05);
+    }
+
+    .results-container {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .result-bar-wrap {
+      margin-bottom: 15px;
+    }
+
+    .result-info {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .bar-bg {
+      background: rgba(255,255,255,0.1);
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      background: linear-gradient(90deg, #2e7d32, #ff9800);
+      height: 100%;
+      width: 0%;
+      transition: width 1s ease;
+    }
+
+    /* BANNER AGENZIA / CREDITI */
+    .agency-banner {
+      background: linear-gradient(90deg, #1e293b, #334155, #1e293b);
+      border-top: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding: 15px 20px;
+      text-align: center;
+      margin-top: 60px;
+      box-shadow: 0 0 15px rgba(255, 152, 0, 0.2);
+      animation: pulseBorder 3s infinite alternate;
+    }
+
+    .agency-banner p {
+      margin: 0;
+      font-size: 1rem;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+    }
+
+    .agency-banner strong {
+      color: var(--accent);
+    }
+
+    .agency-banner a {
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .agency-banner a:hover {
+      color: #7dd3fc;
+      text-decoration: underline;
+    }
+
+    @keyframes pulseBorder {
+      0% { box-shadow: 0 0 10px rgba(255, 152, 0, 0.2); }
+      100% { box-shadow: 0 0 25px rgba(255, 152, 0, 0.6); }
+    }
+
     footer {
       text-align: center;
       padding: 30px;
       font-size: 0.9rem;
       color: #64748b;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
   </style>
 </head>
 <body>
 
+  <!-- SFONDO ANIMATO -->
   <div class="bg-particles">
     <div class="particle" style="top: 20%; left: 15%; animation-delay: 0s;"></div>
     <div class="particle" style="top: 70%; left: 80%; animation-delay: 1s;"></div>
@@ -218,15 +392,41 @@
     <div class="particle" style="top: 10%; left: 85%; animation-delay: 4s;"></div>
   </div>
 
+  <!-- INTESTAZIONE -->
   <header>
     <h1 class="hero-title">🔥 LA FESTA DI GRUPPO 🔥</h1>
     <p class="hero-subtitle">Una serata di fuoco, giochi, musica e travestimenti spettacolari!</p>
+    <div class="location-info">📍 Incontro presso Casa di Clara — Ore 18:00</div>
   </header>
 
+  <!-- COUNTDOWN -->
+  <div class="countdown-container">
+    <h3 class="countdown-title">⏳ Tempo rimasto all'inizio ⏳</h3>
+    <div class="timer">
+      <div class="timer-box">
+        <span class="timer-number" id="days">00</span>
+        <div class="timer-label">Giorni</div>
+      </div>
+      <div class="timer-box">
+        <span class="timer-number" id="hours">00</span>
+        <div class="timer-label">Ore</div>
+      </div>
+      <div class="timer-box">
+        <span class="timer-number" id="minutes">00</span>
+        <div class="timer-label">Minuti</div>
+      </div>
+      <div class="timer-box">
+        <span class="timer-number" id="seconds">00</span>
+        <div class="timer-label">Secondi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEZIONE DESCRIZIONE -->
   <section class="section-desc">
     <h2>Che cos'è la Festa Scout?</h2>
     <p>
-      La Festa di Gruppo è l'evento più travolgente dell'anno! È il momento in cui ci riuniamo per celebrare il nostro percorso con giochi a tappe, grandi sfide, musica e il classico <strong>fuoco di bivacco</strong>. 
+      La Festa di Gruppo è l'evento più travolgente dell'anno! Ci vedremo direttamente a <strong>Casa di Clara alle ore 18:00</strong> per celebrare con giochi a tappe, grandi sfide, musica e il classico <strong>fuoco di bivacco</strong>. 
     </p>
     <br>
     <p>
@@ -234,10 +434,10 @@
     </p>
   </section>
 
+  <!-- SQUADRIGLIE -->
   <h2 class="sq-title">Temi e Dress Code Squadriglie</h2>
 
   <div class="squad-container">
-    
     <div class="squad-card">
       <div class="squad-icon">🦅</div>
       <h3 class="squad-name">Aquile</h3>
@@ -249,7 +449,7 @@
       <div class="squad-icon">🐺</div>
       <h3 class="squad-name">Lupi</h3>
       <span class="theme-tag">Tema: Pirati dei Caraibi</span>
-      <p class="dress-code">Bandane, bende sull'occhio, stivali ruggenti e uncini. Pronti a conquistare la mappa del tesoro!</p>
+      <p class="dress-code">Bandane, bende sull'occhio, stivali ruggenti e uncini. Pronti a conquistar la mappa del tesoro!</p>
     </div>
 
     <div class="squad-card">
@@ -265,12 +465,150 @@
       <span class="theme-tag">Tema: Antico Egitto</span>
       <p class="dress-code">Tuniche bianche, accessori dorati, trucco con eyeliner marcato e copricapi da Faraoni o Mummie.</p>
     </div>
-
   </div>
 
+  <!-- SEZIONE VOTAZIONE AUTOMATICA -->
+  <div class="voting-section" id="votingSection">
+    <!-- Il contenuto si aggiorna automaticamente via JavaScript -->
+  </div>
+
+  <!-- BANNER FIRMA/CREDITI -->
+  <div class="agency-banner">
+    <p>
+      ⚡ Sito interamente creato da <strong>webstudioagency0</strong> (<em>Mattia Spensieri</em>) 
+      — <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a>
+    </p>
+  </div>
+
+  <!-- FOOTER -->
   <footer>
     <p>Buona Caccia & Buona Strada — Sito della Festa Scout 2026</p>
   </footer>
+
+  <!-- SCRIPT LOGICA VOTI E COUNTDOWN -->
+  <script>
+    // 1. COUNTDOWN GENERALE (impostato al 30 Agosto 2026 ore 18:00)
+    const targetDate = new Date("August 30, 2026 18:00:00").getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+        document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+        document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+        document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+      } else {
+        document.querySelector(".countdown-container").innerHTML = "<h2 style='color: var(--accent);'>🎉 LA FESTA È INIZIATA! 🎉</h2>";
+      }
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // 2. GESTIONE VOTAZIONE AUTOMATICA (30 AGOSTO 18:00 - 20:00)
+    const votingSection = document.getElementById("votingSection");
+
+    let votes = JSON.parse(localStorage.getItem("scoutVotes")) || {
+      "Aquile": 12,
+      "Lupi": 18,
+      "Volpi": 15,
+      "Bisonte": 10
+    };
+
+    function checkVotingStatus() {
+      const now = new Date();
+      
+      const voteStart = new Date("August 30, 2026 18:00:00");
+      const voteEnd = new Date("August 30, 2026 20:00:00");
+
+      if (now < voteStart) {
+        votingSection.innerHTML = `
+          <h2>🏆 Votazione Miglior Costume 🏆</h2>
+          <p>Le votazioni apriranno il <strong>30 Agosto alle ore 18:00</strong>!</p>
+          <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 10px;">Prepara la tua squadriglia preferita e vota dal telefono durante la festa.</p>
+        `;
+      } else if (now >= voteStart && now < voteEnd) {
+        const hasVoted = localStorage.getItem("userHasVoted");
+
+        if (hasVoted) {
+          votingSection.innerHTML = `
+            <h2>🏆 Votazione Miglior Costume 🏆</h2>
+            <p style="color: #4caf50; font-size: 1.2rem;">✅ Voto registrato con successo!</p>
+            <p style="margin-top: 10px;">I risultati e la squadriglia vincitrice verranno mostrati qui alle <strong>20:00</strong>.</p>
+          `;
+        } else {
+          votingSection.innerHTML = `
+            <h2>🏆 Vota il Miglior Costume! 🏆</h2>
+            <p>Seleziona la squadriglia che ha realizzato il travestimento più bello:</p>
+            <div class="vote-options">
+              <button class="vote-btn" onclick="submitVote('Aquile')">🦅 Aquile</button>
+              <button class="vote-btn" onclick="submitVote('Lupi')">🐺 Lupi</button>
+              <button class="vote-btn" onclick="submitVote('Volpi')">🦊 Volpi</button>
+              <button class="vote-btn" onclick="submitVote('Bisonte')">🦬 Bisonte</button>
+            </div>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 15px;">Puoi esprimere un solo voto dal tuo dispositivo.</p>
+          `;
+        }
+      } else {
+        showResults();
+      }
+    }
+
+    function submitVote(squad) {
+      votes[squad] = (votes[squad] || 0) + 1;
+      localStorage.setItem("scoutVotes", JSON.stringify(votes));
+      localStorage.setItem("userHasVoted", "true");
+      checkVotingStatus();
+    }
+
+    function showResults() {
+      let totalVotes = 0;
+      let winner = "";
+      let maxVotes = -1;
+
+      for (let sq in votes) {
+        totalVotes += votes[sq];
+        if (votes[sq] > maxVotes) {
+          maxVotes = votes[sq];
+          winner = sq;
+        }
+      }
+
+      let resultsHTML = `
+        <h2>👑 VINCITORE DEL TROFEO 👑</h2>
+        <h3 style="color: var(--accent); font-size: 2.2rem; margin: 10px 0 20px;">🎉 SQUADRIGLIA ${winner.toUpperCase()} 🎉</h3>
+        <p style="margin-bottom: 20px;">Votazione conclusa! Ecco la classifica finale:</p>
+        <div class="results-container">
+      `;
+
+      for (let sq in votes) {
+        let percent = totalVotes > 0 ? Math.round((votes[sq] / totalVotes) * 100) : 0;
+        resultsHTML += `
+          <div class="result-bar-wrap">
+            <div class="result-info">
+              <span>${sq}</span>
+              <span>${votes[sq]} Voti (${percent}%)</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width: ${percent}%;"></div>
+            </div>
+          </div>
+        `;
+      }
+
+      resultsHTML += `</div>`;
+      votingSection.innerHTML = resultsHTML;
+    }
+
+    checkVotingStatus();
+  </script>
 
 </body>
 </html>
