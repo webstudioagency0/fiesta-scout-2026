@@ -199,26 +199,110 @@
 
     .particle {
       position: absolute;
-      width: 10px;
-      height: 10px;
-      background: rgba(255, 152, 0, 0.4);
+      width: 8px;
+      height: 8px;
+      background: #ff9800;
       border-radius: 50%;
-      animation: float 6s infinite ease-in-out;
+      box-shadow: 0 0 10px #ff5722;
+      animation: floatUp 4s infinite linear;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
-      50% { transform: translateY(-100px) scale(1.5); opacity: 0.8; }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+      50% { opacity: 0.9; }
+      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
     }
 
     header {
-      min-height: 40vh;
+      min-height: 50vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 40px 20px 20px;
+      position: relative;
+    }
+
+    /* FIRE ANIMATION STYLES */
+    .fire-container {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .fire-flame {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 20% 20%;
+      animation: burn 0.8s infinite alternate ease-in-out;
+    }
+
+    .flame-1 {
+      width: 60px;
+      height: 70px;
+      background: rgba(255, 69, 0, 0.8);
+      box-shadow: 0 0 20px #ff4500;
+    }
+
+    .flame-2 {
+      width: 45px;
+      height: 55px;
+      background: rgba(255, 140, 0, 0.9);
+      box-shadow: 0 0 15px #ff8c00;
+      animation-delay: 0.2s;
+    }
+
+    .flame-3 {
+      width: 25px;
+      height: 35px;
+      background: #ffeb3b;
+      box-shadow: 0 0 10px #ffeb3b;
+      animation-delay: 0.4s;
+    }
+
+    .fire-logs {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 15px;
+      background: #4a2c11;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+    }
+
+    .fire-logs::before {
+      content: '';
+      position: absolute;
+      width: 70px;
+      height: 15px;
+      background: #361f0b;
+      border-radius: 8px;
+      transform: rotate(25deg);
+    }
+
+    .fire-hint {
+      position: absolute;
+      top: -25px;
+      font-size: 0.75rem;
+      color: #ff9800;
+      white-space: nowrap;
+      background: rgba(0,0,0,0.6);
+      padding: 3px 8px;
+      border-radius: 10px;
+      border: 1px solid #ff9800;
+    }
+
+    @keyframes burn {
+      0% { transform: translateX(-50%) scale(0.9) rotate(-2deg); }
+      100% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
     }
 
     .hero-title {
@@ -588,15 +672,26 @@
 </head>
 <body>
 
+  <!-- SCINTILLE DI BIVACCO SOSPESE -->
   <div class="bg-particles">
-    <div class="particle" style="top: 20%; left: 15%; animation-delay: 0s;"></div>
-    <div class="particle" style="top: 70%; left: 80%; animation-delay: 1s;"></div>
-    <div class="particle" style="top: 40%; left: 50%; animation-delay: 2s;"></div>
-    <div class="particle" style="top: 80%; left: 25%; animation-delay: 3s;"></div>
-    <div class="particle" style="top: 10%; left: 85%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 10%; animation-duration: 3.5s; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 25%; animation-duration: 5s; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 45%; animation-duration: 3s; animation-delay: 0.5s;"></div>
+    <div class="particle" style="left: 60%; animation-duration: 4.5s; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 75%; animation-duration: 3.8s; animation-delay: 1.5s;"></div>
+    <div class="particle" style="left: 90%; animation-duration: 4.2s; animation-delay: 0.8s;"></div>
   </div>
 
   <header>
+    <!-- ANIMAZIONE FUOCO DI BIVACCO CON SUONO -->
+    <div class="fire-container" onclick="toggleFireSound()" title="Tocca il fuoco per attivare l'audio!">
+      <span class="fire-hint" id="fireHint">🔊 Tocca per l'audio</span>
+      <div class="fire-flame flame-1"></div>
+      <div class="fire-flame flame-2"></div>
+      <div class="fire-flame flame-3"></div>
+      <div class="fire-logs"></div>
+    </div>
+
     <h1 class="hero-title">🔥 LA FESTA DI GRUPPO 🔥</h1>
     <p class="hero-subtitle">Una serata di fuoco, giochi, musica e travestimenti spettacolari!</p>
     <div class="location-info">📍 Incontro presso Casa di Clara — Ore 18:00</div>
@@ -750,6 +845,56 @@
         if (window.renderAdminList) window.renderAdminList();
       } else if (inputPass !== null) {
         alert("❌ Password errata! Riprova.");
+      }
+    }
+
+    // GENERATORE DI SUONO FUOCO DI BIVACCO (Senza file esterni)
+    let audioCtx = null;
+    let isFirePlaying = false;
+    let noiseNode = null;
+
+    function toggleFireSound() {
+      const hint = document.getElementById("fireHint");
+      
+      if (!isFirePlaying) {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        
+        // Rumore rosa/marrone modulato per simulare il crepitio del fuoco
+        const bufferSize = audioCtx.sampleRate * 2;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        let lastOut = 0.0;
+        
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          data[i] = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = data[i];
+          data[i] *= 3.5; 
+        }
+
+        noiseNode = audioCtx.createBufferSource();
+        noiseNode.buffer = buffer;
+        noiseNode.loop = true;
+
+        const gainNode = audioCtx.createGain();
+        gainNode.gain.value = 0.15;
+
+        noiseNode.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        noiseNode.start();
+
+        isFirePlaying = true;
+        hint.innerText = "🔥 Audio Attivo!";
+        hint.style.borderColor = "#4caf50";
+        hint.style.color = "#4caf50";
+      } else {
+        if (noiseNode) noiseNode.stop();
+        isFirePlaying = false;
+        hint.innerText = "🔊 Tocca per l'audio";
+        hint.style.borderColor = "#ff9800";
+        hint.style.color = "#ff9800";
       }
     }
   </script>
