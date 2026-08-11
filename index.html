@@ -4,6 +4,165 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grande Festa Scout 2026</title>
+  
+  <!-- SDK Firebase Realtime Database (Modulo Web v9+) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // Configurazioni Firebase dal tuo progetto
+    const firebaseConfig = {
+      apiKey: "AIzaSyBpBCxqKsEHzEFBY5_SmgamO-FRvNGRAgY",
+      authDomain: "festa-scout.firebaseapp.com",
+      databaseURL: "https://festa-scout-default-rtdb.firebaseio.com",
+      projectId: "festa-scout",
+      storageBucket: "festa-scout.firebasestorage.app",
+      messagingSenderId: "1059149852651",
+      appId: "1:1059149852651:web:962dcaf5ccdbb3741eb3ae",
+      measurementId: "G-LW386BBCSX"
+    };
+
+    // Inizializza Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const votesRef = ref(db, 'scoutVotes');
+
+    const squads = [
+      { id: "Aquile", name: "🦅 Aquile" },
+      { id: "Pipistrelli", name: "🦇 Pipistrelli" },
+      { id: "Pantere", name: "🐆 Pantere" },
+      { id: "Scoiattoli", name: "🐿️ Scoiattoli" },
+      { id: "Gufi", name: "🦉 Gufi" }
+    ];
+
+    let votes = {
+      "Aquile": 0,
+      "Pipistrelli": 0,
+      "Pantere": 0,
+      "Scoiattoli": 0,
+      "Gufi": 0
+    };
+
+    // ASCOLTA I CAMBIAMENTI IN TEMPO REALE DA TUTTI I DISPOSITIVI
+    onValue(votesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        votes = data;
+      }
+      renderPublicResults();
+    });
+
+    // AGGIORNA LA VISTA PUBBLICA DEI RISULTATI
+    function renderPublicResults() {
+      const votingPublic = document.getElementById("votingPublic");
+
+      let totalPoints = 0;
+      let winner = "";
+      let maxPoints = -1;
+
+      for (let sq in votes) {
+        totalPoints += votes[sq];
+        if (votes[sq] > maxPoints && votes[sq] > 0) {
+          maxPoints = votes[sq];
+          winner = sq;
+        }
+      }
+
+      let html = `<h2>📊 Classifica e Votazioni Live 📊</h2>`;
+
+      if (winner !== "") {
+        html += `
+          <div style="background: rgba(255,152,0,0.15); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; margin: 15px 0;">
+            <p style="color: #cbd5e1; font-size: 0.9rem; text-transform: uppercase;">Attualmente al Primo Posto:</p>
+            <h3 style="color: var(--accent); font-size: 2rem; margin-top: 5px;">🏆 ${winner.toUpperCase()} (${maxPoints} punti)</h3>
+          </div>
+        `;
+      } else {
+        html += `<p style="color: #94a3b8; margin-top: 10px;">Nessun voto inserito al momento. Usa la sezione Admin sotto per inserire i voti!</p>`;
+      }
+
+      html += `<div class="results-container">`;
+
+      squads.forEach(sq => {
+        let currentVotes = votes[sq.id] || 0;
+        let percent = totalPoints > 0 ? Math.round((currentVotes / totalPoints) * 100) : 0;
+
+        html += `
+          <div class="result-bar-wrap">
+            <div class="result-info">
+              <span>${sq.name}</span>
+              <span>${currentVotes} Voti / Punti (${percent}%)</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width: ${percent}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      votingPublic.innerHTML = html;
+    }
+
+    // FUNZIONE PER AGGIUNGERE VOTI E SALVARI SU FIREBASE
+    window.addVotes = function(squadId) {
+      const select = document.getElementById(`voteSelect-${squadId}`);
+      const valToAdd = parseInt(select.value);
+
+      votes[squadId] = (votes[squadId] || 0) + valToAdd;
+      
+      // Salva nel database cloud
+      set(votesRef, votes);
+    };
+
+    // FUNZIONE PER AZZERARE I VOTI
+    window.resetVotes = function() {
+      if (confirm("Sei sicuro di voler azzerare tutti i voti delle squadriglie?")) {
+        votes = {
+          "Aquile": 0,
+          "Pipistrelli": 0,
+          "Pantere": 0,
+          "Scoiattoli": 0,
+          "Gufi": 0
+        };
+        // Reset nel database cloud
+        set(votesRef, votes);
+      }
+    };
+
+    // RENDERIZZA LA LISTA DEI CONTROLLI ADMIN
+    window.renderAdminList = function() {
+      const container = document.getElementById("adminSquadsList");
+      let html = "";
+
+      squads.forEach(sq => {
+        html += `
+          <div class="admin-item">
+            <span class="admin-sq-name">${sq.name}</span>
+            <div class="admin-controls">
+              <label for="voteSelect-${sq.id}" style="font-size: 0.9rem; color: #cbd5e1;">Aggiungi voto:</label>
+              <select id="voteSelect-${sq.id}" class="vote-select">
+                <option value="1">1 Punto</option>
+                <option value="2">2 Punti</option>
+                <option value="3">3 Punti</option>
+                <option value="4">4 Punti</option>
+                <option value="5">5 Punti</option>
+                <option value="6">6 Punti</option>
+                <option value="7">7 Punti</option>
+                <option value="8">8 Punti</option>
+                <option value="9">9 Punti</option>
+                <option value="10" selected>10 Punti</option>
+              </select>
+              <button class="add-vote-btn" onclick="window.addVotes('${sq.id}')">+ Assegna</button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    };
+  </script>
+
   <style>
     :root {
       --primary: #2e7d32;
@@ -27,7 +186,6 @@
       overflow-x: hidden;
     }
 
-    /* SFONDO ANIMATO CON PARTICELLE */
     .bg-particles {
       position: fixed;
       top: 0;
@@ -53,7 +211,6 @@
       50% { transform: translateY(-100px) scale(1.5); opacity: 0.8; }
     }
 
-    /* HEADER */
     header {
       min-height: 40vh;
       display: flex;
@@ -97,7 +254,6 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* COUNTDOWN */
     .countdown-container {
       max-width: 700px;
       margin: 20px auto 40px;
@@ -145,7 +301,6 @@
       text-transform: uppercase;
     }
 
-    /* SEZIONE DESCRIZIONE */
     .section-desc {
       max-width: 800px;
       margin: 40px auto;
@@ -167,7 +322,6 @@
       line-height: 1.6;
     }
 
-    /* SEZIONE SQUADRIGLIE */
     .sq-header {
       text-align: center;
       margin: 60px 0 30px;
@@ -241,7 +395,6 @@
       line-height: 1.4;
     }
 
-    /* SEZIONE VOTAZIONE PUBBLICA */
     .voting-section {
       max-width: 800px;
       margin: 40px auto;
@@ -290,7 +443,6 @@
       transition: width 0.8s ease;
     }
 
-    /* PANNELLO ADMIN (SIMULAZIONE VOTI) */
     .admin-panel {
       max-width: 800px;
       margin: 30px auto 60px;
@@ -401,7 +553,6 @@
       background: #ef4444;
     }
 
-    /* BANNER FIRMA */
     .agency-banner {
       background: linear-gradient(90deg, #1e293b, #334155, #1e293b);
       border-top: 2px solid var(--accent);
@@ -437,7 +588,6 @@
 </head>
 <body>
 
-  <!-- SFONDO ANIMATO -->
   <div class="bg-particles">
     <div class="particle" style="top: 20%; left: 15%; animation-delay: 0s;"></div>
     <div class="particle" style="top: 70%; left: 80%; animation-delay: 1s;"></div>
@@ -446,14 +596,12 @@
     <div class="particle" style="top: 10%; left: 85%; animation-delay: 4s;"></div>
   </div>
 
-  <!-- INTESTAZIONE -->
   <header>
     <h1 class="hero-title">🔥 LA FESTA DI GRUPPO 🔥</h1>
     <p class="hero-subtitle">Una serata di fuoco, giochi, musica e travestimenti spettacolari!</p>
     <div class="location-info">📍 Incontro presso Casa di Clara — Ore 18:00</div>
   </header>
 
-  <!-- COUNTDOWN -->
   <div class="countdown-container">
     <h3 class="countdown-title">⏳ Tempo rimasto all'inizio ⏳</h3>
     <div class="timer">
@@ -476,7 +624,6 @@
     </div>
   </div>
 
-  <!-- SEZIONE DESCRIZIONE -->
   <section class="section-desc">
     <h2>Che cos'è la Festa Scout?</h2>
     <p>
@@ -488,7 +635,6 @@
     </p>
   </section>
 
-  <!-- SEZIONE SQUADRIGLIE -->
   <div class="sq-header">
     <h2 class="sq-title">🎭 Temi & Dress Code 🎭</h2>
     <p class="sq-subtitle">Ogni squadriglia deve rispettare rigorosamente il proprio tema!</p>
@@ -531,12 +677,10 @@
     </div>
   </div>
 
-  <!-- SEZIONE VOTAZIONE PUBBLICA -->
   <div class="voting-section" id="votingPublic">
     <!-- Risultati live caricati qui da JavaScript -->
   </div>
 
-  <!-- PANNELLO ADMIN (SIMULAZIONE CON PASSWORD) -->
   <div class="admin-panel">
     <h3 class="admin-title">🔒 Area Riservata Staff / Admin</h3>
     
@@ -554,11 +698,10 @@
         <!-- Generato dinamico da JS -->
       </div>
 
-      <button class="reset-btn" onclick="resetVotes()">⚠️ Azzera Tutti i Voti</button>
+      <button class="reset-btn" onclick="window.resetVotes()">⚠️ Azzera Tutti i Voti</button>
     </div>
   </div>
 
-  <!-- BANNER FIRMA/CREDITI -->
   <div class="agency-banner">
     <p>
       ⚡ Sito interamente creato da <strong>webstudioagency0</strong> (<em>Mattia Spensieri</em>) 
@@ -566,14 +709,12 @@
     </p>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <p>Buona Caccia & Buona Strada — Sito della Festa Scout 2026</p>
   </footer>
 
-  <!-- SCRIPT LOGICA -->
   <script>
-    // 1. COUNTDOWN GENERALE (30 Agosto 2026 ore 18:00)
+    // COUNTDOWN
     const targetDate = new Date("August 30, 2026 18:00:00").getTime();
 
     function updateCountdown() {
@@ -598,76 +739,7 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // 2. DATI SQUADRIGLIE E VOTI INIZIALI
-    const squads = [
-      { id: "Aquile", name: "🦅 Aquile" },
-      { id: "Pipistrelli", name: "🦇 Pipistrelli" },
-      { id: "Pantere", name: "🐆 Pantere" },
-      { id: "Scoiattoli", name: "🐿️ Scoiattoli" },
-      { id: "Gufi", name: "🦉 Gufi" }
-    ];
-
-    let votes = JSON.parse(localStorage.getItem("scoutSimVotes")) || {
-      "Aquile": 0,
-      "Pipistrelli": 0,
-      "Pantere": 0,
-      "Scoiattoli": 0,
-      "Gufi": 0
-    };
-
-    // 3. AGGIORNA LA VISTA PUBBLICA DEI RISULTATI
-    function renderPublicResults() {
-      const votingPublic = document.getElementById("votingPublic");
-
-      let totalPoints = 0;
-      let winner = "";
-      let maxPoints = -1;
-
-      for (let sq in votes) {
-        totalPoints += votes[sq];
-        if (votes[sq] > maxPoints && votes[sq] > 0) {
-          maxPoints = votes[sq];
-          winner = sq;
-        }
-      }
-
-      let html = `<h2>📊 Classifica e Votazioni Live 📊</h2>`;
-
-      if (winner !== "") {
-        html += `
-          <div style="background: rgba(255,152,0,0.15); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; margin: 15px 0;">
-            <p style="color: #cbd5e1; font-size: 0.9rem; text-transform: uppercase;">Attualmente al Primo Posto:</p>
-            <h3 style="color: var(--accent); font-size: 2rem; margin-top: 5px;">🏆 ${winner.toUpperCase()} (${maxPoints} punti)</h3>
-          </div>
-        `;
-      } else {
-        html += `<p style="color: #94a3b8; margin-top: 10px;">Nessun voto inserito al momento. Usa la sezione Admin sotto per inserire i voti!</p>`;
-      }
-
-      html += `<div class="results-container">`;
-
-      squads.forEach(sq => {
-        let currentVotes = votes[sq.id] || 0;
-        let percent = totalPoints > 0 ? Math.round((currentVotes / totalPoints) * 100) : 0;
-
-        html += `
-          <div class="result-bar-wrap">
-            <div class="result-info">
-              <span>${sq.name}</span>
-              <span>${currentVotes} Voti / Punti (${percent}%)</span>
-            </div>
-            <div class="bar-bg">
-              <div class="bar-fill" style="width: ${percent}%;"></div>
-            </div>
-          </div>
-        `;
-      });
-
-      html += `</div>`;
-      votingPublic.innerHTML = html;
-    }
-
-    // 4. PANNELLO ADMIN (PASSWORD & CONTROLLI)
+    // ADMIN LOGIN
     const PASS_ADMIN = "admin2026";
 
     function unlockAdmin() {
@@ -675,68 +747,11 @@
       if (inputPass === PASS_ADMIN) {
         document.getElementById("adminLogin").style.display = "none";
         document.getElementById("adminControls").style.display = "block";
-        renderAdminList();
+        if (window.renderAdminList) window.renderAdminList();
       } else if (inputPass !== null) {
         alert("❌ Password errata! Riprova.");
       }
     }
-
-    function renderAdminList() {
-      const container = document.getElementById("adminSquadsList");
-      let html = "";
-
-      squads.forEach(sq => {
-        html += `
-          <div class="admin-item">
-            <span class="admin-sq-name">${sq.name}</span>
-            <div class="admin-controls">
-              <label for="voteSelect-${sq.id}" style="font-size: 0.9rem; color: #cbd5e1;">Aggiungi voto:</label>
-              <select id="voteSelect-${sq.id}" class="vote-select">
-                <option value="1">1 Punto</option>
-                <option value="2">2 Punti</option>
-                <option value="3">3 Punti</option>
-                <option value="4">4 Punti</option>
-                <option value="5">5 Punti</option>
-                <option value="6">6 Punti</option>
-                <option value="7">7 Punti</option>
-                <option value="8">8 Punti</option>
-                <option value="9">9 Punti</option>
-                <option value="10" selected>10 Punti</option>
-              </select>
-              <button class="add-vote-btn" onclick="addVotes('${sq.id}')">+ Assegna</button>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function addVotes(squadId) {
-      const select = document.getElementById(`voteSelect-${squadId}`);
-      const valToAdd = parseInt(select.value);
-
-      votes[squadId] = (votes[squadId] || 0) + valToAdd;
-      localStorage.setItem("scoutSimVotes", JSON.stringify(votes));
-      renderPublicResults();
-    }
-
-    function resetVotes() {
-      if (confirm("Sei sicuro di voler azzerare tutti i voti delle squadriglie?")) {
-        votes = {
-          "Aquile": 0,
-          "Pipistrelli": 0,
-          "Pantere": 0,
-          "Scoiattoli": 0,
-          "Gufi": 0
-        };
-        localStorage.setItem("scoutSimVotes", JSON.stringify(votes));
-        renderPublicResults();
-      }
-    }
-
-    // Inizializza visualizzazione
-    renderPublicResults();
   </script>
 
 </body>
