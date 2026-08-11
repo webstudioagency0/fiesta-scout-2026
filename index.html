@@ -133,64 +133,6 @@
       color: #94a3b8;
     }
 
-    /* SEZIONE COSA PORTARE */
-    .bring-section {
-      max-width: 800px;
-      margin: 30px auto;
-      padding: 25px;
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-
-    .bring-section h2 {
-      color: #38bdf8;
-      text-align: center;
-      margin-bottom: 15px;
-    }
-
-    .bring-category-title {
-      color: var(--accent);
-      font-size: 1.1rem;
-      margin: 15px 0 10px;
-      font-weight: bold;
-    }
-
-    .checklist-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .check-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(15, 23, 42, 0.6);
-      padding: 12px 15px;
-      border-radius: 10px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.2s;
-    }
-
-    .check-item:hover {
-      background: rgba(15, 23, 42, 0.9);
-    }
-
-    .check-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-      cursor: pointer;
-    }
-
-    .check-item.checked span {
-      text-decoration: line-through;
-      color: #64748b;
-    }
-
     /* SEZIONE SQUADRIGLIE */
     .squad-container {
       display: grid;
@@ -278,10 +220,9 @@
       background: var(--primary);
       color: white;
       border: none;
-      padding: 12px;
+      padding: 10px;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 1rem;
       cursor: pointer;
       transition: background 0.3s;
     }
@@ -368,35 +309,6 @@
     </div>
   </div>
 
-  <!-- SEZIONE COSA PORTARE -->
-  <div class="bring-section">
-    <h2>📋 Cosa Portare alla Festa</h2>
-    <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px;">
-      Spunta le voci man mano che prepari lo zaino per non dimenticare nulla!
-    </p>
-
-    <div class="bring-category-title">🎒 Equipaggiamento Personale</div>
-    <div class="checklist-grid">
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Uniforme Scout completa</span></label>
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Borraccia / Gavetta</span></label>
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Torcia elettrica o Lampada frontale</span></label>
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Costume / Travestimento della tua squadriglia</span></label>
-    </div>
-
-    <div class="bring-category-title">🍕 Cibo, Rustici e Snacks</div>
-    <div class="checklist-grid">
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Pizzette, Focacce o Tramezzini</span></label>
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Rustici, Torte salate o Patatine</span></label>
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Dolci fatti in casa o Biscotti</span></label>
-    </div>
-
-    <div class="bring-category-title">🥤 Bibite e Bevande</div>
-    <div class="checklist-grid">
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Succhi di Frutta / Tè freddo</span></label>
-      <label class="check-item"><input type="checkbox" onchange="toggleItem(this)"> <span>Bottiglie d'Acqua o Bibite gassate</span></label>
-    </div>
-  </div>
-
   <div class="squad-container">
     <div class="squad-card"><span class="squad-icon">🦅</span><h3 class="squad-name">Aquile</h3><span class="theme-tag">Supereroi</span></div>
     <div class="squad-card"><span class="squad-icon">🦇</span><h3 class="squad-name">Pipistrelli</h3><span class="theme-tag">Vampiri</span></div>
@@ -434,7 +346,8 @@
   <footer><p>Buona Caccia & Buona Strada — Festa Scout 2026</p></footer>
 
   <script>
-    // 1. CONFIGURAZIONE FIREBASE REALTIME DATABASE
+    // 1. CONFIGURAZIONE FIREBASE REALTIME DATABASE (Gratuito di Google)
+    // Sostituisci i dati sottostanti con le chiavi del tuo progetto Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDummyKeyForTemplate123456789",
       authDomain: "festa-scout-2026.firebaseapp.com",
@@ -457,15 +370,6 @@
       { id: "Gufi", name: "🦉 Gufi" }
     ];
 
-    // CHECKLIST LOGIC (Salva lo stato di spunta sul telefono)
-    function toggleItem(checkbox) {
-      if (checkbox.checked) {
-        checkbox.parentElement.classList.add("checked");
-      } else {
-        checkbox.parentElement.classList.remove("checked");
-      }
-    }
-
     // 2. CREA FORM DI VOTO
     function initVoteForm() {
       const grid = document.getElementById("voteCardsGrid");
@@ -475,7 +379,7 @@
         document.getElementById("votingFormContainer").innerHTML = `
           <div style="background: rgba(46, 125, 50, 0.2); border: 1px solid #4caf50; padding: 15px; border-radius: 12px; text-align: center; margin-top: 15px;">
             <p style="color: #4caf50; font-weight: bold;">✅ Hai già inviato i tuoi voti!</p>
-            <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 5px;">Guarda la classifica in basso per seguire l'andamento live registrato su tutti i dispositivi.</p>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 5px;">Guarda la classifica in basso per seguire l'andamento live.</p>
           </div>
         `;
         return;
@@ -502,7 +406,7 @@
       grid.innerHTML = html;
     }
 
-    // 3. INVIA E SALVA I VOTI SUL DATABASE CONDIVISO
+    // 3. INVIA I VOTI AL DATABASE LIVE
     function submitAllVotes() {
       if (localStorage.getItem("hasVotedFestaScout")) {
         alert("Hai già votato!");
@@ -511,19 +415,19 @@
 
       squads.forEach(sq => {
         const val = parseInt(document.getElementById(`select-${sq.id}`).value);
-        // Transazione atomica Firebase: somma il voto al valore esistente nel cloud
+        // Incrementa la somma totale su Firebase tramite transazione atomica
         db.ref('votes/' + sq.id).transaction(currentVotes => {
           return (currentVotes || 0) + val;
         });
       });
 
-      // Salva localmente la spunta del voto effettuato
+      // Segna sul telefono dell'utente che ha votato
       localStorage.setItem("hasVotedFestaScout", "true");
-      alert("🎉 Voti inviati e salvati sul cloud! La classifica si aggiornerà in tempo reale su tutti i telefoni.");
+      alert("🎉 Voti inviati con successo! La classifica si aggiornerà per tutti.");
       initVoteForm();
     }
 
-    // 4. ASCOLTO LIVE: LEGGE I VOTI DAL CLOUD E AGGIORNA LA SCHERMATA DI TUTTI
+    // 4. ASCOLTO IN TEMPO REALE DEGLI AGGIORNAMENTI DI VOTO
     db.ref('votes').on('value', (snapshot) => {
       const data = snapshot.val() || {};
       renderLiveLeaderboard(data);
