@@ -368,9 +368,10 @@
       animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    /* Assegnazione ritardi personalizzati alle card informative */
+    /* Assegnazione ritardi personalizzati alle card */
     .info-card:nth-of-type(1) { animation-delay: 0.75s; }
     .info-card:nth-of-type(2) { animation-delay: 0.9s; }
+    .map-card { animation-delay: 1.05s; }
 
     .info-card h2 {
       font-size: 1.8rem;
@@ -384,6 +385,40 @@
       margin-bottom: 15px;
     }
 
+    /* Moduli Mappa Mappa Google */
+    .map-container {
+      width: 100%;
+      height: 350px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      margin-top: 15px;
+    }
+
+    .map-container iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .map-btn {
+      display: inline-block;
+      margin-top: 15px;
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .map-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+    }
+
     .voting-section {
       background: var(--card-bg);
       border: 2px dashed var(--accent-color);
@@ -392,7 +427,7 @@
       margin-bottom: 40px;
       backdrop-filter: blur(10px);
       position: relative;
-      animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.05s both;
+      animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
     }
 
     .voting-section h2 {
@@ -496,7 +531,7 @@
       border-radius: 20px;
       padding: 25px;
       margin-bottom: 50px;
-      animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.2s both;
+      animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.35s both;
     }
 
     .admin-panel h3 {
@@ -591,7 +626,7 @@
       color: var(--text-muted);
       border-top: 1px solid var(--border-color);
       font-size: 0.9rem;
-      animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.35s both;
+      animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.5s both;
     }
 
     /* Banner Crediti Agency */
@@ -687,6 +722,25 @@
       <p style="color: var(--text-muted); font-style: italic;">
         Esempio: Marco → Mummia, Mago, Meccanico. Sii originale e sbalordisci tutti!
       </p>
+    </section>
+
+    <!-- Posizione e Mappa Google -->
+    <section class="info-card map-card">
+      <h2>🗺️ Come Arrivare — Casa di Clara</h2>
+      <p>L'evento si terrà presso Casa di Clara. Utilizza la mappa qui sotto o apri direttamente l'app per seguire le indicazioni stradali:</p>
+      
+      <div class="map-container">
+        <iframe 
+          src="https://maps.google.com/maps?q=41.585444,14.706500&hl=it&z=16&output=embed"
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+      <a href="https://www.google.com/maps/search/?api=1&query=41.585444,14.706500" target="_blank" rel="noopener noreferrer" class="map-btn">
+        📍 Apri in Google Maps
+      </a>
     </section>
 
     <!-- Sezione "Cosa Portare" -->
