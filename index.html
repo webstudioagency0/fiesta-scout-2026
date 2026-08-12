@@ -8,7 +8,7 @@
   <!-- SDK Firebase Realtime Database -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, set, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBpBCxqKsEHzEFBY5_SmgamO-FRvNGRAgY",
@@ -24,6 +24,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const votesRef = ref(db, 'scoutVotes');
+    const visitsRef = ref(db, 'siteVisits');
 
     const categories = [
       { id: "Aquile", name: "Aquile" },
@@ -35,6 +36,23 @@
 
     let votes = { "Aquile": 0, "Pipistrelli": 0, "Pantere": 0, "Scoiattoli": 0, "Gufi": 0 };
     let forceUnlock = false;
+    let visitCount = 0;
+    let statsUnlocked = false;
+
+    // Gestione Contatore Visite in Tempo Reale
+    if (!sessionStorage.getItem("scout_visited_session")) {
+      sessionStorage.setItem("scout_visited_session", "true");
+      runTransaction(visitsRef, (currentVisits) => {
+        return (currentVisits || 0) + 1;
+      });
+    }
+
+    onValue(visitsRef, (snapshot) => {
+      visitCount = snapshot.val() || 0;
+      if (statsUnlocked) {
+        document.getElementById("statsBtnTop").innerText = `👁️ Accessi: ${visitCount}`;
+      }
+    });
 
     onValue(votesRef, (snapshot) => {
       const data = snapshot.val();
@@ -154,6 +172,19 @@
       });
       container.innerHTML = html;
     };
+
+    window.unlockTopStats = function() {
+      if (statsUnlocked) return;
+      const pass = prompt("Inserisci la password Staff per vedere gli accessi:");
+      if (pass === "admin2026") {
+        statsUnlocked = true;
+        document.getElementById("statsBtnTop").innerText = `👁️ Accessi: ${visitCount}`;
+        document.getElementById("statsBtnTop").style.borderColor = "#38bdf8";
+        document.getElementById("statsBtnTop").style.color = "#38bdf8";
+      } else if (pass !== null) {
+        alert("Password errata!");
+      }
+    };
   </script>
 
   <style>
@@ -212,6 +243,31 @@
       overflow-x: hidden;
       position: relative;
       padding-bottom: 70px;
+    }
+
+    /* Tasto Accessi Nascosto in Alto a Destra */
+    .top-stats-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 100;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .top-stats-btn:hover {
+      background: rgba(51, 65, 85, 0.95);
+      color: #fff;
+      transform: translateY(-2px);
     }
 
     #stars-container {
@@ -740,10 +796,14 @@
       .admin-controls { width: 100%; justify-content: space-between; }
       .credits-banner { font-size: 0.85rem; }
       .author-highlight { font-size: 1.05rem; }
+      .top-stats-btn { top: 10px; right: 10px; padding: 6px 12px; font-size: 0.75rem; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Tasto Riservato in Alto a Destra -->
+  <button id="statsBtnTop" class="top-stats-btn" onclick="window.unlockTopStats()">🔒 Staff Area</button>
 
   <canvas id="stars-container"></canvas>
 
