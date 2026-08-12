@@ -175,8 +175,8 @@
 
     window.unlockTopStats = function() {
       if (statsUnlocked) return;
-      const pass = prompt("Inserisci la password Staff per vedere gli accessi:");
-      if (pass === "admin2026") {
+      const pass = prompt("Inserisci la password per vedere gli accessi:");
+      if (pass === "admin2027") {
         statsUnlocked = true;
         document.getElementById("statsBtnTop").innerText = `👁️ Accessi: ${visitCount}`;
         document.getElementById("statsBtnTop").style.borderColor = "#38bdf8";
@@ -802,7 +802,7 @@
 </head>
 <body>
 
-  <!-- Tasto Riservato in Alto a Destra -->
+  <!-- Tasto Riservato in Alto a Destra (Password: admin2027) -->
   <button id="statsBtnTop" class="top-stats-btn" onclick="window.unlockTopStats()">🔒 Staff Area</button>
 
   <canvas id="stars-container"></canvas>
@@ -933,7 +933,7 @@
       <!-- Gestito via JS -->
     </div>
 
-    <!-- Pannello Amministrazione Staff -->
+    <!-- Pannello Amministrazione Staff (Password: admin2026) -->
     <div class="admin-panel">
       <h3>🔒 Gestione Staff</h3>
       <div id="adminLogin" style="text-align:center; margin-top:15px;">
