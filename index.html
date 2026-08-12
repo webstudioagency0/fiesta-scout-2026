@@ -157,6 +157,8 @@
   </script>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
     :root {
       --primary-color: #2e7d32;
       --primary-light: #4caf50;
@@ -258,7 +260,7 @@
       font-weight: 800;
       color: var(--text-main);
       text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       line-height: 1.1;
       background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 100%);
       -webkit-background-clip: text;
@@ -266,12 +268,28 @@
       animation: animFadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
     }
 
+    /* Stile Scritta "PAZZA IDEA" Obliqua con Font Stravagante */
+    .hero-crazy-tag {
+      font-family: 'Permanent Marker', 'Comic Sans MS', cursive, sans-serif;
+      font-size: 2.2rem;
+      font-style: italic;
+      color: #ff3366;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      transform: rotate(-6deg) skewX(-10deg);
+      text-shadow: 0 0 15px rgba(255, 51, 102, 0.6), 2px 2px 0px #000;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      display: inline-block;
+      animation: animZoomIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+    }
+
     .hero-subtitle {
       font-size: 1.4rem;
       color: var(--text-muted);
       max-width: 650px;
       margin-bottom: 25px;
-      animation: animFadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      animation: animFadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
     }
 
     .location-card {
@@ -672,7 +690,7 @@
       border-top: 1px solid rgba(56, 189, 248, 0.3);
       padding: 12px 20px;
       text-align: center;
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: var(--text-muted);
       backdrop-filter: blur(10px);
       box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
@@ -683,13 +701,14 @@
       font-weight: 700;
     }
 
-    /* Mattia Spensieri personalizzato ed evidenziato */
+    /* Scritta Mattia Spensieri ancora più grande ed evidenziata */
     .author-highlight {
-      font-size: 1.05rem;
-      font-weight: 800;
+      font-size: 1.25rem;
+      font-weight: 900;
       color: #ffb74d;
-      letter-spacing: 0.5px;
-      text-shadow: 0 0 10px rgba(255, 183, 77, 0.3);
+      letter-spacing: 0.8px;
+      text-shadow: 0 0 12px rgba(255, 183, 77, 0.5);
+      margin: 0 4px;
     }
 
     .credits-banner a {
@@ -705,7 +724,7 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, .hero-badge, .hero-title, .hero-subtitle, .location-card, 
+      *, .hero-badge, .hero-title, .hero-crazy-tag, .hero-subtitle, .location-card, 
       .countdown-section, .info-card, .voting-section, .admin-panel, footer, .item-icon {
         animation: none !important;
         transition: none !important;
@@ -714,12 +733,13 @@
 
     @media (max-width: 600px) {
       .hero-title { font-size: 2.3rem; }
+      .hero-crazy-tag { font-size: 1.6rem; }
       .timer-grid { gap: 8px; }
       .timer-val { font-size: 1.8rem; }
       .admin-item { flex-direction: column; gap: 10px; align-items: flex-start; }
       .admin-controls { width: 100%; justify-content: space-between; }
       .credits-banner { font-size: 0.85rem; }
-      .author-highlight { font-size: 0.95rem; }
+      .author-highlight { font-size: 1.05rem; }
     }
   </style>
 </head>
@@ -730,6 +750,7 @@
   <header>
     <div class="hero-badge">Evento Esclusivo Scout</div>
     <h1 class="hero-title">LA FESTA DI GRUPPO 2026</h1>
+    <div class="hero-crazy-tag">⚡ PAZZA IDEA ⚡</div>
     <p class="hero-subtitle">Una serata indimenticabile tra giochi, sfide e condivisione!</p>
     <div class="location-card">
       <span>📍 Casa di Clara — <strong>1° Settembre 2026</strong> (ore 18:00 - 22:00)</span>
@@ -871,7 +892,7 @@
     <p>Grande Festa Scout 2026 • 1° Settembre 2026 (dalle 18:00 alle 22:00)</p>
   </footer>
 
-  <!-- Banner Crediti Agency (FISSO CON TESTO INGRANDITO) -->
+  <!-- Banner Crediti Agency FISSO CON TESTO INGRANDITO -->
   <div class="credits-banner">
     💻 Sito creato da <strong>Web Studio Agency</strong> — <span class="author-highlight">Mattia Spensieri</span> | ✉️ <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a>
   </div>
