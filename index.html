@@ -34,7 +34,7 @@
     ];
 
     let votes = { "Aquile": 0, "Pipistrelli": 0, "Pantere": 0, "Scoiattoli": 0, "Gufi": 0 };
-    let forceUnlock = false; // Per testare il voto subito
+    let forceUnlock = false;
 
     onValue(votesRef, (snapshot) => {
       const data = snapshot.val();
@@ -45,7 +45,6 @@
       }
     });
 
-    // Controllo se sono passati le 18:00 del 1° Settembre 2026
     function isVotingOpen() {
       if (forceUnlock) return true;
       const now = new Date().getTime();
@@ -102,7 +101,6 @@
       votingPublic.innerHTML = html;
     }
 
-    // Voto dell'utente normale (massimo 1 voto)
     window.userSubmitVote = function(squadId) {
       if (localStorage.getItem("scout_voted_2026")) {
         alert("Hai già votato!");
@@ -118,7 +116,6 @@
       }
     };
 
-    // Funzione Staff per aggiungere/rimuovere punti manuali
     window.addVotes = function(id) {
       const valToAdd = parseInt(document.getElementById(`voteSelect-${id}`).value);
       votes[id] = (votes[id] || 0) + valToAdd;
@@ -187,7 +184,6 @@
       position: relative;
     }
 
-    /* Background Canvas */
     #stars-container {
       position: fixed;
       top: 0;
@@ -198,7 +194,6 @@
       pointer-events: none;
     }
 
-    /* Header e Hero */
     header {
       min-height: 50vh;
       display: flex;
@@ -273,7 +268,6 @@
       padding: 0 20px;
     }
 
-    /* Timer Countdown */
     .countdown-section {
       margin: -20px auto 40px;
       background: var(--card-bg);
@@ -323,7 +317,6 @@
       text-transform: uppercase;
     }
 
-    /* Sezioni Card */
     .info-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -346,41 +339,6 @@
       margin-bottom: 15px;
     }
 
-    /* Style Bacheca */
-    .bacheca-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .bacheca-item {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-color);
-      border-left: 4px solid var(--accent-color);
-      padding: 15px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .bacheca-item:hover {
-      transform: translateX(5px);
-      background: rgba(255, 255, 255, 0.07);
-    }
-
-    .bacheca-icon {
-      font-size: 1.5rem;
-    }
-
-    .bacheca-text {
-      font-size: 1rem;
-      font-weight: 500;
-    }
-
-    /* Votazione e Risultati */
     .voting-section {
       background: var(--card-bg);
       border: 2px dashed var(--accent-color);
@@ -486,7 +444,6 @@
       box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
     }
 
-    /* Admin Panel */
     .admin-panel {
       background: var(--card-bg);
       border: 1px solid rgba(56, 189, 248, 0.3);
@@ -589,6 +546,34 @@
       font-size: 0.9rem;
     }
 
+    /* Banner Crediti Agency */
+    .credits-banner {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+      border-top: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .credits-banner strong {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .credits-banner a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    .credits-banner a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
     @media (max-width: 600px) {
       .hero-title { font-size: 2.3rem; }
       .timer-grid { gap: 8px; }
@@ -647,33 +632,9 @@
       </p>
     </section>
 
-    <!-- Bacheca "Cosa Portare" -->
+    <!-- Sezione "Cosa Portare" (Vuota) -->
     <section class="info-card">
-      <h2>📌 Bacheca: Cosa Portare</h2>
-      <p>Assicurati di non dimenticare l'indispensabile per la serata (dalle 18:00 alle 22:00):</p>
-      
-      <div class="bacheca-grid">
-        <div class="bacheca-item">
-          <span class="bacheca-icon">🔦</span>
-          <span class="bacheca-text">Torcia elettrica personale</span>
-        </div>
-        <div class="bacheca-item">
-          <span class="bacheca-icon">🍕</span>
-          <span class="bacheca-text">Cibo/Dolce da condividere</span>
-        </div>
-        <div class="bacheca-item">
-          <span class="bacheca-icon">🥤</span>
-          <span class="bacheca-text">Borraccia o bicchiere riutilizzabile</span>
-        </div>
-        <div class="bacheca-item">
-          <span class="bacheca-icon">🎭</span>
-          <span class="bacheca-text">Il tuo travestimento a tema</span>
-        </div>
-        <div class="bacheca-item">
-          <span class="bacheca-icon">⚡</span>
-          <span class="bacheca-text">Tanta carica e voglia di giocare</span>
-        </div>
-      </div>
+      <h2>📌 Cosa Portare</h2>
     </section>
 
     <!-- Votazioni e Classifica -->
@@ -700,8 +661,12 @@
     <p>Grande Festa Scout 2026 • 1° Settembre 2026 (dalle 18:00 alle 22:00)</p>
   </footer>
 
+  <!-- Banner Crediti Agency -->
+  <div class="credits-banner">
+    💻 Sito creato da <strong>Web Studio Agency</strong> — Mattia Spensieri | ✉️ <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a>
+  </div>
+
   <script>
-    // Canvas animazione stelle + stelle cadenti
     const canvas = document.getElementById('stars-container');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -738,7 +703,6 @@
     function drawScene() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Stelle fisse
       ctx.fillStyle = '#ffffff';
       stars.forEach(star => {
         ctx.globalAlpha = star.alpha;
@@ -751,7 +715,6 @@
         }
       });
 
-      // Stelle cadenti
       shootingStars.forEach((sStar, index) => {
         ctx.globalAlpha = sStar.alpha;
         ctx.strokeStyle = '#ff9800';
@@ -774,7 +737,6 @@
     }
     drawScene();
 
-    // Countdown Timer per il 1° Settembre 2026 alle 18:00
     const targetDate = new Date("September 1, 2026 18:00:00").getTime();
 
     function updateCountdown() {
@@ -802,7 +764,6 @@
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // Password Staff
     const PASS_ADMIN = "admin2026";
     function unlockAdmin() {
       const p = prompt("Inserisci la password Staff:");
