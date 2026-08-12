@@ -169,40 +169,31 @@
       --border-color: rgba(255, 255, 255, 0.12);
     }
 
-    /* --------------------------------------------------
-     * ANIMAZIONI DI INGRESSO (KEYFRAMES)
-     * -------------------------------------------------- */
+    /* Animazioni Incontro */
     @keyframes animFadeDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes animFadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(35px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(35px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes animZoomIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Animazioni Icone */
+    @keyframes floatIcon {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(4deg); }
+    }
+
+    @keyframes pulseIcon {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
     }
 
     * {
@@ -218,7 +209,7 @@
       line-height: 1.6;
       overflow-x: hidden;
       position: relative;
-      padding-bottom: 60px; /* Spazio per non coprire il contenuto con la barra fissa */
+      padding-bottom: 70px;
     }
 
     #stars-container {
@@ -369,10 +360,6 @@
       animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
-    .info-card:nth-of-type(1) { animation-delay: 0.75s; }
-    .info-card:nth-of-type(2) { animation-delay: 0.9s; }
-    .map-card { animation-delay: 1.05s; }
-
     .info-card h2 {
       font-size: 1.8rem;
       color: var(--primary-light);
@@ -383,6 +370,51 @@
       font-size: 1.1rem;
       color: var(--text-main);
       margin-bottom: 15px;
+    }
+
+    /* Modulo "Cosa Portare" */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .squad-item-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .squad-item-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-color);
+    }
+
+    .item-icon {
+      font-size: 2.2rem;
+      display: inline-block;
+      animation: floatIcon 3s ease-in-out infinite;
+    }
+
+    .squad-item-card:nth-child(even) .item-icon {
+      animation: pulseIcon 2.5s ease-in-out infinite;
+    }
+
+    .squad-item-info strong {
+      display: block;
+      font-size: 1.15rem;
+      color: #38bdf8;
+    }
+
+    .squad-item-info span {
+      font-size: 1rem;
+      color: var(--text-main);
     }
 
     /* Moduli Mappa Google */
@@ -629,18 +661,18 @@
       animation: animFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.5s both;
     }
 
-    /* Banner Crediti Agency - FISSO IN BASSO */
+    /* Banner Crediti Agency FISSO IN BASSO */
     .credits-banner {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
       z-index: 1000;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96));
       border-top: 1px solid rgba(56, 189, 248, 0.3);
       padding: 12px 20px;
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       color: var(--text-muted);
       backdrop-filter: blur(10px);
       box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
@@ -649,6 +681,15 @@
     .credits-banner strong {
       color: #38bdf8;
       font-weight: 700;
+    }
+
+    /* Mattia Spensieri personalizzato ed evidenziato */
+    .author-highlight {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffb74d;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 10px rgba(255, 183, 77, 0.3);
     }
 
     .credits-banner a {
@@ -663,10 +704,9 @@
       text-decoration: underline;
     }
 
-    /* Accessibilità per chi riduce i movimenti */
     @media (prefers-reduced-motion: reduce) {
       *, .hero-badge, .hero-title, .hero-subtitle, .location-card, 
-      .countdown-section, .info-card, .voting-section, .admin-panel, footer {
+      .countdown-section, .info-card, .voting-section, .admin-panel, footer, .item-icon {
         animation: none !important;
         transition: none !important;
       }
@@ -678,6 +718,8 @@
       .timer-val { font-size: 1.8rem; }
       .admin-item { flex-direction: column; gap: 10px; align-items: flex-start; }
       .admin-controls { width: 100%; justify-content: space-between; }
+      .credits-banner { font-size: 0.85rem; }
+      .author-highlight { font-size: 0.95rem; }
     }
   </style>
 </head>
@@ -751,7 +793,58 @@
 
     <!-- Sezione "Cosa Portare" -->
     <section class="info-card">
-      <h2>📌 Cosa Portare</h2>
+      <h2>📌 Cosa Portare per Ciascuna Squadriglia</h2>
+      <p>Ogni squadriglia si occuperà di portare elementi specifici per il rinfresco della festa:</p>
+      
+      <div class="items-grid">
+        <div class="squad-item-card">
+          <span class="item-icon">🥤</span>
+          <div class="squad-item-info">
+            <strong>Pantere</strong>
+            <span>Bibite</span>
+          </div>
+        </div>
+
+        <div class="squad-item-card">
+          <span class="item-icon">🧃</span>
+          <div class="squad-item-info">
+            <strong>Pipistrelli</strong>
+            <span>Bibite</span>
+          </div>
+        </div>
+
+        <div class="squad-item-card">
+          <span class="item-icon">🍕</span>
+          <div class="squad-item-info">
+            <strong>Leoni</strong>
+            <span>Salati</span>
+          </div>
+        </div>
+
+        <div class="squad-item-card">
+          <span class="item-icon">🍰</span>
+          <div class="squad-item-info">
+            <strong>Aquile</strong>
+            <span>Dolci</span>
+          </div>
+        </div>
+
+        <div class="squad-item-card">
+          <span class="item-icon">🍽️</span>
+          <div class="squad-item-info">
+            <strong>Scoiattoli</strong>
+            <span>Piatti, bicchieri e posate</span>
+          </div>
+        </div>
+
+        <div class="squad-item-card">
+          <span class="item-icon">🥨</span>
+          <div class="squad-item-info">
+            <strong>Gufi</strong>
+            <span>Salati</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Votazioni e Classifica -->
@@ -778,9 +871,9 @@
     <p>Grande Festa Scout 2026 • 1° Settembre 2026 (dalle 18:00 alle 22:00)</p>
   </footer>
 
-  <!-- Banner Crediti Agency (FISSO) -->
+  <!-- Banner Crediti Agency (FISSO CON TESTO INGRANDITO) -->
   <div class="credits-banner">
-    💻 Sito creato da <strong>Web Studio Agency</strong> — Mattia Spensieri | ✉️ <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a>
+    💻 Sito creato da <strong>Web Studio Agency</strong> — <span class="author-highlight">Mattia Spensieri</span> | ✉️ <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a>
   </div>
 
   <script>
