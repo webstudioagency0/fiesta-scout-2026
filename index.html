@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grande Festa Scout 2026</title>
   
-  <!-- SDK Firebase Realtime Database (Modulo Web v9+) -->
+  <!-- SDK Firebase Realtime Database -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Configurazioni Firebase dal tuo progetto
     const firebaseConfig = {
       apiKey: "AIzaSyBpBCxqKsEHzEFBY5_SmgamO-FRvNGRAgY",
       authDomain: "festa-scout.firebaseapp.com",
@@ -22,155 +21,95 @@
       measurementId: "G-LW386BBCSX"
     };
 
-    // Inizializza Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const votesRef = ref(db, 'scoutVotes');
 
-    const squads = [
-      { id: "Aquile", name: "🦅 Aquile" },
-      { id: "Pipistrelli", name: "🦇 Pipistrelli" },
-      { id: "Pantere", name: "🐆 Pantere" },
-      { id: "Scoiattoli", name: "🐿️ Scoiattoli" },
-      { id: "Gufi", name: "🦉 Gufi" }
+    const categories = [
+      { id: "Aquile", name: "Aquile" },
+      { id: "Pipistrelli", name: "Pipistrelli" },
+      { id: "Pantere", name: "Pantere" },
+      { id: "Scoiattoli", name: "Scoiattoli" },
+      { id: "Gufi", name: "Gufi" }
     ];
 
-    let votes = {
-      "Aquile": 0,
-      "Pipistrelli": 0,
-      "Pantere": 0,
-      "Scoiattoli": 0,
-      "Gufi": 0
-    };
+    let votes = { "Aquile": 0, "Pipistrelli": 0, "Pantere": 0, "Scoiattoli": 0, "Gufi": 0 };
 
-    // ASCOLTA I CAMBIAMENTI IN TEMPO REALE DA TUTTI I DISPOSITIVI
     onValue(votesRef, (snapshot) => {
       const data = snapshot.val();
-      if (data) {
-        votes = data;
-      }
+      if (data) votes = data;
       renderPublicResults();
+      if (document.getElementById("adminControls").style.display !== "none") {
+        renderAdminList();
+      }
     });
 
-    // AGGIORNA LA VISTA PUBBLICA DEI RISULTATI
     function renderPublicResults() {
       const votingPublic = document.getElementById("votingPublic");
-
       let totalPoints = 0;
-      let winner = "";
-      let maxPoints = -1;
+      for (let sq in votes) totalPoints += votes[sq];
 
-      for (let sq in votes) {
-        totalPoints += votes[sq];
-        if (votes[sq] > maxPoints && votes[sq] > 0) {
-          maxPoints = votes[sq];
-          winner = sq;
-        }
-      }
-
-      let html = `<h2>📊 Classifica e Votazioni Live 📊</h2>`;
-
-      if (winner !== "") {
-        html += `
-          <div style="background: rgba(255,152,0,0.15); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; margin: 15px 0;">
-            <p style="color: #cbd5e1; font-size: 0.9rem; text-transform: uppercase;">Attualmente al Primo Posto:</p>
-            <h3 style="color: var(--accent); font-size: 2rem; margin-top: 5px;">🏆 ${winner.toUpperCase()} (${maxPoints} punti)</h3>
-          </div>
-        `;
-      } else {
-        html += `<p style="color: #94a3b8; margin-top: 10px;">Nessun voto inserito al momento. Usa la sezione Admin sotto per inserire i voti!</p>`;
-      }
-
+      let html = `<h2>📊 Punteggi Giochi Live 📊</h2>`;
       html += `<div class="results-container">`;
 
-      squads.forEach(sq => {
-        let currentVotes = votes[sq.id] || 0;
+      categories.forEach(cat => {
+        let currentVotes = votes[cat.id] || 0;
         let percent = totalPoints > 0 ? Math.round((currentVotes / totalPoints) * 100) : 0;
-
         html += `
           <div class="result-bar-wrap">
             <div class="result-info">
-              <span>${sq.name}</span>
-              <span>${currentVotes} Voti / Punti (${percent}%)</span>
+              <span class="sq-title-res">${cat.name}</span>
+              <span class="sq-pts-res">${currentVotes} Punti (${percent}%)</span>
             </div>
-            <div class="bar-bg">
-              <div class="bar-fill" style="width: ${percent}%;"></div>
-            </div>
-          </div>
-        `;
+            <div class="bar-bg"><div class="bar-fill" style="width: ${percent}%;"></div></div>
+          </div>`;
       });
-
       html += `</div>`;
       votingPublic.innerHTML = html;
     }
 
-    // FUNZIONE PER AGGIUNGERE VOTI E SALVARI SU FIREBASE
-    window.addVotes = function(squadId) {
-      const select = document.getElementById(`voteSelect-${squadId}`);
-      const valToAdd = parseInt(select.value);
-
-      votes[squadId] = (votes[squadId] || 0) + valToAdd;
-      
-      // Salva nel database cloud
+    window.addVotes = function(id) {
+      const valToAdd = parseInt(document.getElementById(`voteSelect-${id}`).value);
+      votes[id] = (votes[id] || 0) + valToAdd;
       set(votesRef, votes);
     };
 
-    // FUNZIONE PER AZZERARE I VOTI
     window.resetVotes = function() {
-      if (confirm("Sei sicuro di voler azzerare tutti i voti delle squadriglie?")) {
-        votes = {
-          "Aquile": 0,
-          "Pipistrelli": 0,
-          "Pantere": 0,
-          "Scoiattoli": 0,
-          "Gufi": 0
-        };
-        // Reset nel database cloud
+      if (confirm("Sei sicuro di voler azzerare tutti i punti accumulati?")) {
+        votes = { "Aquile": 0, "Pipistrelli": 0, "Pantere": 0, "Scoiattoli": 0, "Gufi": 0 };
         set(votesRef, votes);
       }
     };
 
-    // RENDERIZZA LA LISTA DEI CONTROLLI ADMIN
     window.renderAdminList = function() {
       const container = document.getElementById("adminSquadsList");
       let html = "";
-
-      squads.forEach(sq => {
+      categories.forEach(cat => {
         html += `
           <div class="admin-item">
-            <span class="admin-sq-name">${sq.name}</span>
+            <span class="admin-sq-name">${cat.name}</span>
             <div class="admin-controls">
-              <label for="voteSelect-${sq.id}" style="font-size: 0.9rem; color: #cbd5e1;">Aggiungi voto:</label>
-              <select id="voteSelect-${sq.id}" class="vote-select">
-                <option value="1">1 Punto</option>
-                <option value="2">2 Punti</option>
-                <option value="3">3 Punti</option>
-                <option value="4">4 Punti</option>
-                <option value="5">5 Punti</option>
-                <option value="6">6 Punti</option>
-                <option value="7">7 Punti</option>
-                <option value="8">8 Punti</option>
-                <option value="9">9 Punti</option>
-                <option value="10" selected>10 Punti</option>
+              <select id="voteSelect-${cat.id}" class="vote-select">
+                ${[...Array(10).keys()].map(i => `<option value="${i+1}">+${i+1} Punti</option>`).join('')}
               </select>
-              <button class="add-vote-btn" onclick="window.addVotes('${sq.id}')">+ Assegna</button>
+              <button class="add-vote-btn" onclick="window.addVotes('${cat.id}')">Assegna</button>
             </div>
-          </div>
-        `;
+          </div>`;
       });
-
       container.innerHTML = html;
     };
   </script>
 
   <style>
     :root {
-      --primary: #2e7d32;
-      --accent: #ff9800;
-      --accent-glow: rgba(255, 152, 0, 0.4);
-      --bg: #0f172a;
-      --text: #f8fafc;
+      --primary-color: #2e7d32;
+      --primary-light: #4caf50;
+      --accent-color: #ff9800;
+      --bg-dark: #0f172a;
       --card-bg: rgba(30, 41, 59, 0.7);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: rgba(255, 255, 255, 0.1);
     }
 
     * {
@@ -180,39 +119,26 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
       overflow-x: hidden;
+      position: relative;
     }
 
-    .bg-particles {
+    /* Background Animation */
+    #stars-container {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
+      width: 100%;
+      height: 100%;
       z-index: -1;
-      background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+      pointer-events: none;
     }
 
-    .particle {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: #ff9800;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #ff5722;
-      animation: floatUp 4s infinite linear;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
-      50% { opacity: 0.9; }
-      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
-    }
-
+    /* Header e Hero */
     header {
       min-height: 50vh;
       display: flex;
@@ -220,681 +146,503 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 40px 20px 20px;
+      padding: 60px 20px 40px;
       position: relative;
+      background: radial-gradient(circle at center, rgba(46, 125, 50, 0.2) 0%, rgba(15, 23, 42, 0) 70%);
     }
 
-    /* FIRE ANIMATION STYLES */
-    .fire-container {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      margin-bottom: 15px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .fire-flame {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: 50% 50% 20% 20%;
-      animation: burn 0.8s infinite alternate ease-in-out;
-    }
-
-    .flame-1 {
-      width: 60px;
-      height: 70px;
-      background: rgba(255, 69, 0, 0.8);
-      box-shadow: 0 0 20px #ff4500;
-    }
-
-    .flame-2 {
-      width: 45px;
-      height: 55px;
-      background: rgba(255, 140, 0, 0.9);
-      box-shadow: 0 0 15px #ff8c00;
-      animation-delay: 0.2s;
-    }
-
-    .flame-3 {
-      width: 25px;
-      height: 35px;
-      background: #ffeb3b;
-      box-shadow: 0 0 10px #ffeb3b;
-      animation-delay: 0.4s;
-    }
-
-    .fire-logs {
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 70px;
-      height: 15px;
-      background: #4a2c11;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.8);
-    }
-
-    .fire-logs::before {
-      content: '';
-      position: absolute;
-      width: 70px;
-      height: 15px;
-      background: #361f0b;
-      border-radius: 8px;
-      transform: rotate(25deg);
-    }
-
-    .fire-hint {
-      position: absolute;
-      top: -25px;
-      font-size: 0.75rem;
-      color: #ff9800;
-      white-space: nowrap;
-      background: rgba(0,0,0,0.6);
-      padding: 3px 8px;
-      border-radius: 10px;
-      border: 1px solid #ff9800;
-    }
-
-    @keyframes burn {
-      0% { transform: translateX(-50%) scale(0.9) rotate(-2deg); }
-      100% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
+    .hero-badge {
+      background: rgba(255, 152, 0, 0.15);
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
     }
 
     .hero-title {
-      font-size: 3.2rem;
-      color: var(--accent);
-      text-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
-      animation: pulse 2.5s infinite alternate, slideDown 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      margin-bottom: 10px;
+      line-height: 1.1;
     }
 
     .hero-subtitle {
+      font-size: 1.4rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 25px;
+    }
+
+    .location-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .location-icon {
       font-size: 1.3rem;
-      margin-top: 15px;
     }
 
-    .location-info {
-      margin-top: 20px;
-      background: rgba(255, 152, 0, 0.15);
-      border: 1px solid var(--accent);
-      padding: 12px 25px;
-      border-radius: 30px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #fff;
+    /* Container layout */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); text-shadow: 0 0 10px rgba(255,152,0,0.5); }
-      100% { transform: scale(1.05); text-shadow: 0 0 30px rgba(255,152,0,1); }
-    }
-
-    @keyframes slideDown {
-      from { transform: translateY(-100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .countdown-container {
-      max-width: 700px;
-      margin: 20px auto 40px;
-      padding: 25px;
-      background: rgba(255, 255, 255, 0.05);
+    /* Timer Countdown */
+    .countdown-section {
+      margin: -20px auto 40px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      padding: 25px;
       text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
     }
 
     .countdown-title {
-      font-size: 1.4rem;
-      color: var(--accent);
-      margin-bottom: 20px;
+      font-size: 1rem;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
+      color: var(--accent-color);
+      margin-bottom: 15px;
     }
 
-    .timer {
+    .timer-grid {
       display: flex;
       justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
+      gap: 20px;
     }
 
     .timer-box {
-      background: rgba(0, 0, 0, 0.4);
-      border: 2px solid var(--primary);
-      border-radius: 12px;
-      padding: 15px;
-      min-width: 85px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 70px;
     }
 
-    .timer-number {
-      font-size: 2.2rem;
-      font-weight: bold;
-      color: #38bdf8;
+    .timer-val {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fff;
     }
 
     .timer-label {
       font-size: 0.8rem;
-      color: #94a3b8;
-      margin-top: 5px;
+      color: var(--text-muted);
       text-transform: uppercase;
     }
 
-    .section-desc {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 30px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .section-desc h2 {
-      color: #4caf50;
-      margin-bottom: 15px;
-      font-size: 1.8rem;
-    }
-
-    .section-desc p {
-      font-size: 1.05rem;
-      line-height: 1.6;
-    }
-
-    .sq-header {
-      text-align: center;
-      margin: 60px 0 30px;
-    }
-
-    .sq-title {
-      font-size: 2.5rem;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .sq-subtitle {
-      color: #94a3b8;
-      font-size: 1rem;
-      margin-top: 8px;
-    }
-
-    .squad-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
-      max-width: 1200px;
-      margin: 0 auto 50px;
-      padding: 0 20px;
-    }
-
-    .squad-card {
+    /* Sezioni generiche */
+    .info-card {
       background: var(--card-bg);
+      border: 1px solid var(--border-color);
       border-radius: 20px;
-      padding: 25px 20px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-
-    .squad-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--accent);
-    }
-
-    .squad-icon {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    .squad-name {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: #ffffff;
-    }
-
-    .theme-tag {
-      display: inline-block;
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
-      color: #fff;
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .dress-code {
-      font-size: 0.9rem;
-      color: #cbd5e1;
-      line-height: 1.4;
-    }
-
-    .voting-section {
-      max-width: 800px;
-      margin: 40px auto;
       padding: 30px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 2px dashed var(--accent);
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .info-card h2 {
+      font-size: 1.8rem;
+      color: var(--primary-light);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .info-card p {
+      font-size: 1.1rem;
+      color: var(--text-main);
+      margin-bottom: 15px;
+    }
+
+    /* Style Bacheca */
+    .bacheca-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .bacheca-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-color);
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bacheca-icon {
+      font-size: 1.5rem;
+    }
+
+    .bacheca-text {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    /* Tabella Classifica / Voti */
+    .voting-section {
+      background: var(--card-bg);
+      border: 2px dashed var(--accent-color);
       border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(255, 152, 0, 0.2);
+      padding: 30px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(10px);
     }
 
     .voting-section h2 {
-      color: var(--accent);
-      margin-bottom: 15px;
-      font-size: 1.8rem;
-    }
-
-    .results-container {
-      margin-top: 25px;
-      text-align: left;
+      text-align: center;
+      margin-bottom: 25px;
+      color: var(--accent-color);
+      font-size: 2rem;
     }
 
     .result-bar-wrap {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .result-info {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 6px;
-      font-weight: bold;
-      font-size: 1.05rem;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .sq-title-res {
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .sq-pts-res {
+      color: var(--accent-color);
     }
 
     .bar-bg {
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       height: 22px;
       border-radius: 11px;
       overflow: hidden;
     }
 
     .bar-fill {
-      background: linear-gradient(90deg, #2e7d32, #ff9800);
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
       height: 100%;
       width: 0%;
-      transition: width 0.8s ease;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Pannello Admin */
     .admin-panel {
-      max-width: 800px;
-      margin: 30px auto 60px;
-      padding: 25px;
-      background: rgba(30, 41, 59, 0.95);
-      border: 2px solid #38bdf8;
+      background: var(--card-bg);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       border-radius: 20px;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+      padding: 25px;
+      margin-bottom: 50px;
     }
 
-    .admin-title {
+    .admin-panel h3 {
       color: #38bdf8;
       font-size: 1.4rem;
-      text-align: center;
       margin-bottom: 15px;
-    }
-
-    .admin-login-wrap {
       text-align: center;
     }
 
     .admin-btn {
       background: #38bdf8;
       color: #0f172a;
-      border: none;
-      padding: 12px 25px;
-      font-size: 1rem;
       font-weight: bold;
+      border: none;
+      padding: 12px 24px;
       border-radius: 10px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.2s ease;
     }
 
     .admin-btn:hover {
       background: #7dd3fc;
-    }
-
-    .admin-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      margin-top: 20px;
+      transform: translateY(-2px);
     }
 
     .admin-item {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      background: rgba(15, 23, 42, 0.8);
-      padding: 15px 20px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      flex-wrap: wrap;
-      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
 
     .admin-sq-name {
-      font-size: 1.2rem;
-      font-weight: bold;
-      min-width: 150px;
+      font-weight: 600;
+      font-size: 1.1rem;
     }
 
     .admin-controls {
       display: flex;
-      align-items: center;
       gap: 10px;
     }
 
     .vote-select {
       background: #1e293b;
-      color: #fff;
-      border: 1px solid #38bdf8;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
+      color: white;
+      border: 1px solid var(--border-color);
+      padding: 8px;
+      border-radius: 6px;
+      outline: none;
     }
 
     .add-vote-btn {
-      background: #2e7d32;
-      color: #fff;
+      background: var(--primary-color);
+      color: white;
       border: none;
       padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: bold;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.2s;
+      font-weight: 600;
     }
 
     .add-vote-btn:hover {
-      background: #4caf50;
+      background: var(--primary-light);
     }
 
     .reset-btn {
       background: #dc2626;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
+      padding: 12px;
+      border-radius: 8px;
       margin-top: 20px;
       width: 100%;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     .reset-btn:hover {
       background: #ef4444;
     }
 
-    .agency-banner {
-      background: linear-gradient(90deg, #1e293b, #334155, #1e293b);
-      border-top: 2px solid var(--accent);
-      border-bottom: 2px solid var(--accent);
-      padding: 15px 20px;
-      text-align: center;
-      margin-top: 60px;
-    }
-
-    .agency-banner p {
-      margin: 0;
-      font-size: 1rem;
-      color: #f8fafc;
-    }
-
-    .agency-banner strong {
-      color: var(--accent);
-    }
-
-    .agency-banner a {
-      color: #38bdf8;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
+    /* Footer */
     footer {
       text-align: center;
       padding: 30px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
       font-size: 0.9rem;
-      color: #64748b;
+    }
+
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2.3rem; }
+      .timer-grid { gap: 10px; }
+      .timer-val { font-size: 1.8rem; }
+      .admin-item { flex-direction: column; gap: 10px; align-items: flex-start; }
+      .admin-controls { width: 100%; justify-content: space-between; }
     }
   </style>
 </head>
 <body>
 
-  <!-- SCINTILLE DI BIVACCO SOSPESE -->
-  <div class="bg-particles">
-    <div class="particle" style="left: 10%; animation-duration: 3.5s; animation-delay: 0s;"></div>
-    <div class="particle" style="left: 25%; animation-duration: 5s; animation-delay: 1s;"></div>
-    <div class="particle" style="left: 45%; animation-duration: 3s; animation-delay: 0.5s;"></div>
-    <div class="particle" style="left: 60%; animation-duration: 4.5s; animation-delay: 2s;"></div>
-    <div class="particle" style="left: 75%; animation-duration: 3.8s; animation-delay: 1.5s;"></div>
-    <div class="particle" style="left: 90%; animation-duration: 4.2s; animation-delay: 0.8s;"></div>
-  </div>
+  <canvas id="stars-container"></canvas>
 
   <header>
-    <!-- ANIMAZIONE FUOCO DI BIVACCO CON SUONO -->
-    <div class="fire-container" onclick="toggleFireSound()" title="Tocca il fuoco per attivare l'audio!">
-      <span class="fire-hint" id="fireHint">🔊 Tocca per l'audio</span>
-      <div class="fire-flame flame-1"></div>
-      <div class="fire-flame flame-2"></div>
-      <div class="fire-flame flame-3"></div>
-      <div class="fire-logs"></div>
+    <div class="hero-badge">Evento Esclusivo Scout</div>
+    <h1 class="hero-title">LA FESTA DI GRUPPO 2026</h1>
+    <p class="hero-subtitle">Una serata indimenticabile tra giochi, sfide e condivisione!</p>
+    <div class="location-card">
+      <span class="location-icon">📍</span>
+      <span>Casa di Clara — Dalle ore 18:00 in poi</span>
     </div>
-
-    <h1 class="hero-title">🔥 LA FESTA DI GRUPPO 🔥</h1>
-    <p class="hero-subtitle">Una serata di fuoco, giochi, musica e travestimenti spettacolari!</p>
-    <div class="location-info">📍 Incontro presso Casa di Clara — Ore 18:00</div>
   </header>
 
-  <div class="countdown-container">
-    <h3 class="countdown-title">⏳ Tempo rimasto all'inizio ⏳</h3>
-    <div class="timer">
-      <div class="timer-box">
-        <span class="timer-number" id="days">00</span>
-        <div class="timer-label">Giorni</div>
+  <main class="container">
+
+    <!-- Countdown Timer -->
+    <section class="countdown-section">
+      <div class="countdown-title">Mancano all'inizio:</div>
+      <div class="timer-grid">
+        <div class="timer-box">
+          <span class="timer-val" id="days">00</span>
+          <span class="timer-label">Giorni</span>
+        </div>
+        <div class="timer-box">
+          <span class="timer-val" id="hours">00</span>
+          <span class="timer-label">Ore</span>
+        </div>
+        <div class="timer-box">
+          <span class="timer-val" id="minutes">00</span>
+          <span class="timer-label">Minuti</span>
+        </div>
+        <div class="timer-box">
+          <span class="timer-val" id="seconds">00</span>
+          <span class="timer-label">Secondi</span>
+        </div>
       </div>
-      <div class="timer-box">
-        <span class="timer-number" id="hours">00</span>
-        <div class="timer-label">Ore</div>
-      </div>
-      <div class="timer-box">
-        <span class="timer-number" id="minutes">00</span>
-        <div class="timer-label">Minuti</div>
-      </div>
-      <div class="timer-box">
-        <span class="timer-number" id="seconds">00</span>
-        <div class="timer-label">Secondi</div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <section class="section-desc">
-    <h2>Che cos'è la Festa Scout?</h2>
-    <p>
-      La Festa di Gruppo è l'evento più travolgente dell'anno! Ci vedremo direttamente a <strong>Casa di Clara alle ore 18:00</strong> per celebrare con giochi a tappe, grandi sfide, musica e il classico <strong>fuoco di bivacco</strong>.
-    </p>
-    <br>
-    <p>
-      Quest'anno ogni squadriglia avrà un <strong>tema unico e obbligatorio</strong> per il travestimento. Preparate i vostri costumi: la squadriglia più originale vincerà il trofeo della serata!
-    </p>
-  </section>
-
-  <div class="sq-header">
-    <h2 class="sq-title">🎭 Temi & Dress Code 🎭</h2>
-    <p class="sq-subtitle">Ogni squadriglia deve rispettare rigorosamente il proprio tema!</p>
-  </div>
-
-  <div class="squad-container">
-    <div class="squad-card">
-      <span class="squad-icon">🦅</span>
-      <h3 class="squad-name">Aquile</h3>
-      <span class="theme-tag">Supereroi</span>
-      <p class="dress-code">Mantelli sfavillanti, maschere, stemmi sul petto e calzamaglies colorate.</p>
-    </div>
-
-    <div class="squad-card">
-      <span class="squad-icon">🦇</span>
-      <h3 class="squad-name">Pipistrelli</h3>
-      <span class="theme-tag">Notte & Vampiri</span>
-      <p class="dress-code">Abiti neri e oscuri, mantelli a punta, canini affilati e trucco spettrale.</p>
-    </div>
-
-    <div class="squad-card">
-      <span class="squad-icon">🐆</span>
-      <h3 class="squad-name">Pantere</h3>
-      <span class="theme-tag">Giungla & Wild</span>
-      <p class="dress-code">Stampe maculate, pittura facciale felina, mimetica e dettagli selvaggi.</p>
-    </div>
-
-    <div class="squad-card">
-      <span class="squad-icon">🐿️</span>
-      <h3 class="squad-name">Scoiattoli</h3>
-      <span class="theme-tag">Esploratori del Futuro</span>
-      <p class="dress-code">Tute spaziali dorate, occhiali tecnologici, antenne e luci a LED.</p>
-    </div>
-
-    <div class="squad-card">
-      <span class="squad-icon">🦉</span>
-      <h3 class="squad-name">Gufi</h3>
-      <span class="theme-tag">Mago & Stregoneria</span>
-      <p class="dress-code">Cappelli a punta, bacchette magiche, tuniche eleganti e libri di incantesimi.</p>
-    </div>
-  </div>
-
-  <div class="voting-section" id="votingPublic">
-    <!-- Risultati live caricati qui da JavaScript -->
-  </div>
-
-  <div class="admin-panel">
-    <h3 class="admin-title">🔒 Area Riservata Staff / Admin</h3>
-    
-    <div id="adminLogin" class="admin-login-wrap">
-      <p style="margin-bottom: 15px; color: #cbd5e1;">Inserisci la password per simulare i voti da 1 a 10 per ogni squadriglia:</p>
-      <button class="admin-btn" onclick="unlockAdmin()">Inserisci Password Admin</button>
-    </div>
-
-    <div id="adminControls" style="display: none;">
-      <p style="color: #4caf50; font-weight: bold; text-align: center; margin-bottom: 15px;">
-        ✅ Accesso effettuato! Sotto trovi tutte le squadriglie per inserire i voti (da 1 a 10):
+    <!-- Dress Code -->
+    <section class="info-card">
+      <h2>🎭 Dress Code: L'Iniziale del tuo Nome</h2>
+      <p>
+        La regola per il costume di quest'anno è semplice ma ricca di fantasia! Ognuno dovrà presentarsi vestito o travestito da qualcosa/qualcuno che inizia con la <strong>stessa lettera del proprio nome</strong>.
       </p>
+      <p style="color: var(--text-muted); font-style: italic;">
+        Esempio: Marco → Mummia, Mago, Meccanico, Mario Bros. Sii originale e sbalordisci tutti!
+      </p>
+    </section>
+
+    <!-- Bacheca "Cosa Portare" -->
+    <section class="info-card">
+      <h2>📌 Bacheca: Cosa Portare</h2>
+      <p>Assicurati di non dimenticare l'indispensabile per goderti al massimo la serata:</p>
       
-      <div id="adminSquadsList" class="admin-list">
-        <!-- Generato dinamico da JS -->
+      <div class="bacheca-grid">
+        <div class="bacheca-item">
+          <span class="bacheca-icon">🔦</span>
+          <span class="bacheca-text">Torcia elettrica personale</span>
+        </div>
+        <div class="bacheca-item">
+          <span class="bacheca-icon">🍕</span>
+          <span class="bacheca-text">Cibo/Dolce da condividere</span>
+        </div>
+        <div class="bacheca-item">
+          <span class="bacheca-icon">🥤</span>
+          <span class="bacheca-text">Borraccia o bicchiere riutilizzabile</span>
+        </div>
+        <div class="bacheca-item">
+          <span class="bacheca-icon">🎭</span>
+          <span class="bacheca-text">Il tuo travestimento a tema</span>
+        </div>
+        <div class="bacheca-item">
+          <span class="bacheca-icon">⚡</span>
+          <span class="bacheca-text">Tanta carica e voglia di giocare</span>
+        </div>
       </div>
+    </section>
 
-      <button class="reset-btn" onclick="window.resetVotes()">⚠️ Azzera Tutti i Voti</button>
+    <!-- Classifica / Punteggio in Tempo Reale -->
+    <div class="voting-section" id="votingPublic">
+      <!-- I punteggi vengono caricati dinamicamente via JS/Firebase -->
     </div>
-  </div>
 
-  <div class="agency-banner">
-    <p>
-      ⚡ Sito interamente creato da <strong>webstudioagency0</strong> (<em>Mattia Spensieri</em>) 
-      — <a href="mailto:mattia.spensieri@gmail.com">mattia.spensieri@gmail.com</a>
-    </p>
-  </div>
+    <!-- Pannello Amministrazione -->
+    <div class="admin-panel">
+      <h3>🔒 Gestione Punteggi Staff</h3>
+      <div id="adminLogin" style="text-align:center; margin-top:15px;">
+        <button class="admin-btn" onclick="unlockAdmin()">Sblocca Pannello Staff</button>
+      </div>
+      <div id="adminControls" style="display: none;">
+        <div id="adminSquadsList" class="admin-list" style="margin-top:15px;"></div>
+        <button class="reset-btn" onclick="window.resetVotes()">⚠️ Azzera Tutti i Punteggi</button>
+      </div>
+    </div>
+
+  </main>
 
   <footer>
-    <p>Buona Caccia & Buona Strada — Sito della Festa Scout 2026</p>
+    <p>Grande Festa Scout 2026 • Realizzato con spirito di servizio</p>
   </footer>
 
   <script>
-    // COUNTDOWN
-    const targetDate = new Date("August 30, 2026 18:00:00").getTime();
+    // Starfield background effect
+    const canvas = document.getElementById('stars-container');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    for(let i = 0; i < 120; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5,
+        alpha: Math.random(),
+        speed: Math.random() * 0.02
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      stars.forEach(star => {
+        ctx.globalAlpha = star.alpha;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) {
+          star.speed = -star.speed;
+        }
+      });
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // Countdown Timer logic
+    const targetDate = new Date("June 20, 2026 18:00:00").getTime();
 
     function updateCountdown() {
       const now = new Date().getTime();
-      const difference = targetDate - now;
+      const distance = targetDate - now;
 
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-        document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-        document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-        document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-      } else {
-        document.querySelector(".countdown-container").innerHTML = "<h2 style='color: var(--accent);'>🎉 LA FESTA È INIZIATA! 🎉</h2>";
+      if (distance < 0) {
+        document.getElementById("days").innerText = "00";
+        document.getElementById("hours").innerText = "00";
+        document.getElementById("minutes").innerText = "00";
+        document.getElementById("seconds").innerText = "00";
+        return;
       }
-    }
 
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+      document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+      document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+      document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+    }
     setInterval(updateCountdown, 1000);
     updateCountdown();
 
-    // ADMIN LOGIN
+    // Admin authentication
     const PASS_ADMIN = "admin2026";
-
     function unlockAdmin() {
-      const inputPass = prompt("Inserisci la Password Amministratore:");
-      if (inputPass === PASS_ADMIN) {
+      const p = prompt("Inserisci la password dello Staff:");
+      if (p === PASS_ADMIN) {
         document.getElementById("adminLogin").style.display = "none";
         document.getElementById("adminControls").style.display = "block";
-        if (window.renderAdminList) window.renderAdminList();
-      } else if (inputPass !== null) {
-        alert("❌ Password errata! Riprova.");
-      }
-    }
-
-    // GENERATORE DI SUONO FUOCO DI BIVACCO (Senza file esterni)
-    let audioCtx = null;
-    let isFirePlaying = false;
-    let noiseNode = null;
-
-    function toggleFireSound() {
-      const hint = document.getElementById("fireHint");
-      
-      if (!isFirePlaying) {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        
-        // Rumore rosa/marrone modulato per simulare il crepitio del fuoco
-        const bufferSize = audioCtx.sampleRate * 2;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        let lastOut = 0.0;
-        
-        for (let i = 0; i < bufferSize; i++) {
-          const white = Math.random() * 2 - 1;
-          data[i] = (lastOut + (0.02 * white)) / 1.02;
-          lastOut = data[i];
-          data[i] *= 3.5; 
-        }
-
-        noiseNode = audioCtx.createBufferSource();
-        noiseNode.buffer = buffer;
-        noiseNode.loop = true;
-
-        const gainNode = audioCtx.createGain();
-        gainNode.gain.value = 0.15;
-
-        noiseNode.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        noiseNode.start();
-
-        isFirePlaying = true;
-        hint.innerText = "🔥 Audio Attivo!";
-        hint.style.borderColor = "#4caf50";
-        hint.style.color = "#4caf50";
-      } else {
-        if (noiseNode) noiseNode.stop();
-        isFirePlaying = false;
-        hint.innerText = "🔊 Tocca per l'audio";
-        hint.style.borderColor = "#ff9800";
-        hint.style.color = "#ff9800";
+        window.renderAdminList();
+      } else if (p !== null) {
+        alert("Password errata!");
       }
     }
   </script>
